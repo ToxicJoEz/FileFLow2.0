@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FileFlow — 404 Not Found</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.error-wrap {
+  min-height: 100vh; display: flex; align-items: center;
+  justify-content: center; padding: 2rem; text-align: center;
+  position: relative; overflow: hidden;
+}
+.error-orb { position: absolute; border-radius: 50%; pointer-events: none; filter: blur(80px); }
+.error-code {
+  font-family: var(--display); font-size: clamp(110px, 20vw, 220px);
+  font-weight: 800; letter-spacing: -0.06em; line-height: 1;
+  color: var(--surface); user-select: none; margin-bottom: 0.25rem;
+}
+.error-title {
+  font-family: var(--display); font-size: clamp(22px, 4vw, 36px);
+  font-weight: 700; color: var(--text); letter-spacing: -0.03em; margin-bottom: 1rem;
+}
+.error-desc {
+  font-size: 16px; color: var(--text-2); font-weight: 300;
+  max-width: 420px; line-height: 1.7; margin: 0 auto 2.5rem;
+}
+.error-search {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg-2); border: 1px solid var(--border-2);
+  border-radius: var(--radius); padding: 6px 6px 6px 18px;
+  max-width: 380px; margin: 0 auto 2.5rem;
+}
+.error-search input {
+  flex: 1; background: transparent; border: none; outline: none;
+  font-family: var(--sans); font-size: 15px; color: var(--text);
+}
+.error-search input::placeholder { color: var(--text-4); }
+.error-search button {
+  background: var(--gold); color: var(--bg); border: none;
+  padding: 9px 20px; border-radius: 7px; font-size: 13px;
+  font-weight: 600; font-family: var(--sans); cursor: pointer; transition: transform 0.15s;
+}
+.error-search button:hover { transform: translateY(-1px); }
+.error-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.error-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 10px 18px; font-size: 14px; color: var(--text-2); text-decoration: none; transition: all 0.2s;
+}
+.error-link:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+.float-file {
+  position: absolute; pointer-events: none; background: var(--bg-2);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 8px 14px; font-family: var(--mono); font-size: 11px;
+  color: var(--text-4); display: flex; align-items: center; gap: 8px;
+}
+.ff-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+@media (max-width: 600px) {
+  .float-file { display: none; }
+}
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+
+<div class="error-wrap">
+  <div class="error-orb" style="width:500px;height:500px;top:-100px;left:50%;transform:translateX(-50%);background:rgba(124,58,237,0.12)"></div>
+  <div class="error-orb" style="width:280px;height:280px;bottom:0;right:5%;background:rgba(245,166,35,0.06)"></div>
+
+  <div class="float-file" style="top:18%;left:5%;animation:float 6s ease-in-out infinite">
+    <div class="ff-dot" style="background:#ef4444"></div>contract.pdf
+  </div>
+  <div class="float-file" style="top:26%;right:6%;animation:float 8s ease-in-out infinite 1s">
+    <div class="ff-dot" style="background:var(--purple-2)"></div>report.docx
+  </div>
+  <div class="float-file" style="bottom:22%;left:7%;animation:float 7s ease-in-out infinite 0.5s">
+    <div class="ff-dot" style="background:#10b981"></div>data.xlsx
+  </div>
+  <div class="float-file" style="bottom:28%;right:7%;animation:float 9s ease-in-out infinite 2s">
+    <div class="ff-dot" style="background:var(--gold)"></div>notes.txt
+  </div>
+  <div class="float-file" style="top:50%;left:3%;animation:float 10s ease-in-out infinite 3s">
+    <div class="ff-dot" style="background:#3b82f6"></div>slides.pptx
+  </div>
+
+  <div style="position:relative;z-index:1">
+    <div class="error-code">404</div>
+    <h1 class="error-title">This file doesn't exist.</h1>
+    <p class="error-desc">We searched everywhere — PDFs, spreadsheets, Word docs — and couldn't find the page you're looking for. It may have moved or been deleted.</p>
+
+    <div class="error-search">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:var(--gold);flex-shrink:0">
+        <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M11 11l2.5 2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <input type="text" placeholder="Search the site..." id="s404" onkeydown="if(event.key==='Enter')go()">
+      <button onclick="go()">Search</button>
+    </div>
+
+    <div class="error-links">
+      <a href="index.html"     class="error-link">🏠 Home</a>
+      <a href="about.html"     class="error-link">👋 About</a>
+      <a href="pricing.html"   class="error-link">💰 Pricing</a>
+      <a href="blog.html"      class="error-link">📖 Blog</a>
+      <a href="community.html" class="error-link">💬 Community</a>
+      <a href="changelog.html" class="error-link">📋 Changelog</a>
+      <a href="contact.html"   class="error-link">📧 Contact</a>
+    </div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+injectNav('');
+function go() {
+  const q = document.getElementById('s404').value.trim();
+  if (q) window.location.href = 'blog.html';
+}
+</script>
+</body>
+</html>

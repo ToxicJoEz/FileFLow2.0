@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FileFlow — Achievements</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.app-shell { display: flex; min-height: calc(100vh - 68px); margin-top: 68px; }
+.app-sidebar {
+  width: 220px; flex-shrink: 0;
+  background: var(--bg-1); border-right: 1px solid var(--border);
+  padding: 1.5rem 1rem; position: sticky; top: 68px;
+  height: calc(100vh - 68px); overflow-y: auto;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.sidebar-user { padding: 1rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 1rem; }
+.sidebar-av { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--gold)); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--bg); margin-bottom: 8px; }
+.snav-label { font-family: var(--mono); font-size: 10px; color: var(--text-4); text-transform: uppercase; letter-spacing: 0.1em; padding: 0 10px; margin: 12px 0 4px; }
+.snav-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--radius); font-size: 14px; color: var(--text-2); text-decoration: none; transition: all 0.15s; }
+.snav-item:hover { background: var(--bg-2); color: var(--text); }
+.snav-item.active { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(245,166,35,0.15); }
+.snav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.snav-badge { margin-left: auto; background: var(--surface); font-family: var(--mono); font-size: 10px; color: var(--text-3); padding: 2px 7px; border-radius: 100px; }
+
+.app-main { flex: 1; padding: 2.5rem 3rem 5rem; overflow: auto; min-width: 0; }
+
+/* Progress card */
+.ach-progress { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 2rem; margin-bottom: 2rem; }
+.prog-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem; }
+.prog-title { font-family: var(--display); font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+.prog-subtitle { font-family: var(--mono); font-size: 11px; color: var(--text-3); margin-top: 4px; }
+.rank-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--gold-dim); border: 1px solid rgba(245,166,35,0.25); border-radius: 100px; padding: 7px 16px; font-family: var(--mono); font-size: 12px; color: var(--gold); white-space: nowrap; }
+.prog-track { height: 10px; background: var(--bg-3); border-radius: 5px; overflow: hidden; margin-bottom: 0.75rem; }
+.prog-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--purple-2), var(--gold)); }
+.rank-labels { display: flex; justify-content: space-between; }
+.rank-label { font-family: var(--mono); font-size: 10px; color: var(--text-4); text-align: center; }
+.rank-label.current { color: var(--gold); font-weight: 600; }
+.ach-counters { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.ach-ctr { text-align: center; }
+.ach-ctr-n { font-family: var(--display); font-size: 26px; font-weight: 800; letter-spacing: -0.03em; }
+.ach-ctr-l { font-family: var(--mono); font-size: 10px; color: var(--text-4); margin-top: 2px; }
+
+/* Filters */
+.ach-filters { display: flex; gap: 8px; margin-bottom: 2rem; flex-wrap: wrap; }
+.ach-filter { background: var(--bg-2); border: 1px solid var(--border); border-radius: 100px; padding: 7px 18px; font-family: var(--mono); font-size: 12px; color: var(--text-2); cursor: pointer; transition: all 0.2s; }
+.ach-filter:hover { border-color: var(--border-2); color: var(--text); }
+.ach-filter.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+/* Section */
+.ach-section { margin-bottom: 3rem; }
+.ach-sec-hdr { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+.ach-sec-title { font-family: var(--display); font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+.ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.secret-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+
+.ach-item { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1rem; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; min-width: 0; }
+.ach-item:hover { border-color: var(--border-2); transform: translateY(-3px); }
+.ach-item.locked { opacity: 0.6; }
+.ach-item.rare { border-color: rgba(124,58,237,0.2); }
+.ach-item.epic { border-color: rgba(124,58,237,0.35); background: rgba(124,58,237,0.04); }
+.ach-item.legendary { border-color: rgba(245,166,35,0.35); background: rgba(245,166,35,0.04); }
+.ach-item.legendary:hover { box-shadow: 0 8px 24px rgba(245,166,35,0.12); }
+.ach-new { position: absolute; top: -6px; right: -6px; background: var(--green); color: #fff; font-family: var(--mono); font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 100px; }
+.ach-icon { font-size: 30px; display: block; margin-bottom: 8px; }
+.ach-title { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
+.ach-desc { font-size: 11px; color: var(--text-3); line-height: 1.4; margin-bottom: 4px; }
+.ach-rarity { font-family: var(--mono); font-size: 10px; margin-top: 6px; }
+.rarity-common { color: var(--text-3); } .rarity-rare { color: var(--purple-3); } .rarity-epic { color: var(--purple-2); } .rarity-legendary { color: var(--gold); }
+.ach-prog-mini { height: 3px; background: var(--bg-3); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+.ach-prog-fill { height: 100%; border-radius: 2px; background: var(--purple-2); }
+.ach-prog-txt { font-family: var(--mono); font-size: 9px; color: var(--text-4); margin-top: 3px; }
+
+
+.secret-item { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1rem; text-align: center; }
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+
+<div class="app-shell">
+  <!-- Sidebar -->
+  <aside class="app-sidebar">
+    <div class="sidebar-user">
+      <div class="sidebar-av">AR</div>
+      <div style="font-size:14px;font-weight:500;color:var(--text)">Ahmed Al-Rashidi</div>
+      <div style="margin-top:4px"><span class="tag gold" style="font-size:10px">Pro Beta</span></div>
+    </div>
+    <div class="snav-label">Main</div>
+    <a href="dashboard.html" class="snav-item"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>Dashboard</a>
+    <a href="profile.html" class="snav-item"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-2.761 2.686-5 6-5s6 2.239 6 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Profile</a>
+    <a href="achievements.html" class="snav-item active"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3.5H13l-2.75 2 1 3.5L8 9.5 4.75 11l1-3.5L3 5.5h3.5L8 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>Achievements <span class="snav-badge">3 new</span></a>
+    <div class="snav-label">Account</div>
+    <a href="#" class="snav-item"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="11" width="5" height="3" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="2" width="5" height="7" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="7" width="5" height="7" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="2" width="5" height="3" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>Billing</a>
+    <a href="#" class="snav-item"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 2v1M8 13v1M2 8h1M13 8h1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Settings</a>
+    <a href="community.html" class="snav-item"><svg viewBox="0 0 16 16" fill="none"><path d="M2 12V5a1 1 0 011-1h10a1 1 0 011 1v5a1 1 0 01-1 1H5l-3 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>Community</a>
+    <div style="margin-top:auto;padding-top:1rem;border-top:1px solid var(--border)">
+      <a href="login.html" class="snav-item"><svg viewBox="0 0 16 16" fill="none"><path d="M6 14H3a1 1 0 01-1-1V3a1 1 0 011-1h3M10 11l3-3-3-3M13 8H6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sign out</a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="app-main">
+    <!-- Progress -->
+    <div class="ach-progress anim-fade-up">
+      <div class="prog-top">
+        <div>
+          <div class="prog-subtitle">YOUR RANK</div>
+          <div class="prog-title">Knowledge Seeker</div>
+        </div>
+        <div class="rank-badge">✦ 12 / 40 achievements</div>
+      </div>
+      <div class="prog-track"><div class="prog-fill" style="width:30%"></div></div>
+      <div class="rank-labels">
+        <div class="rank-label">Beginner<br><span>0</span></div>
+        <div class="rank-label">Explorer<br><span>5</span></div>
+        <div class="rank-label current">Seeker ←<br><span>12</span></div>
+        <div class="rank-label">Master<br><span>20</span></div>
+        <div class="rank-label">Expert<br><span>30</span></div>
+        <div class="rank-label">Legend<br><span>40</span></div>
+      </div>
+      <div class="ach-counters">
+        <div class="ach-ctr"><div class="ach-ctr-n" style="color:var(--text-3)">8</div><div class="ach-ctr-l">Common</div></div>
+        <div class="ach-ctr"><div class="ach-ctr-n" style="color:var(--purple-3)">3</div><div class="ach-ctr-l">Rare</div></div>
+        <div class="ach-ctr"><div class="ach-ctr-n" style="color:var(--purple-2)">1</div><div class="ach-ctr-l">Epic</div></div>
+        <div class="ach-ctr"><div class="ach-ctr-n" style="color:var(--gold)">0</div><div class="ach-ctr-l">Legendary</div></div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="ach-filters">
+      <button class="ach-filter active">All</button>
+      <button class="ach-filter">✓ Earned</button>
+      <button class="ach-filter">🔒 Locked</button>
+      <button class="ach-filter">⭐ Legendary</button>
+      <button class="ach-filter">💜 Epic</button>
+    </div>
+
+    <!-- Search Milestones -->
+    <div class="ach-section anim-fade-up">
+      <div class="ach-sec-hdr">
+        <span style="font-size:20px">🔍</span>
+        <div class="ach-sec-title">Search Milestones</div>
+        <span class="tag">5 / 10 earned</span>
+      </div>
+      <div class="ach-grid">
+        <div class="ach-item"><div class="ach-new">NEW</div><span class="ach-icon">🔍</span><div class="ach-title">First Search</div><div class="ach-desc">Run your very first search</div><div class="ach-rarity rarity-common">Common</div></div>
+        <div class="ach-item"><span class="ach-icon">💯</span><div class="ach-title">100 Searches</div><div class="ach-desc">Complete 100 searches</div><div class="ach-rarity rarity-common">Common</div></div>
+        <div class="ach-item rare"><span class="ach-icon">🚀</span><div class="ach-title">500 Searches</div><div class="ach-desc">Complete 500 searches</div><div class="ach-rarity rarity-rare">Rare</div></div>
+        <div class="ach-item rare"><div class="ach-new">NEW</div><span class="ach-icon">⚡</span><div class="ach-title">1,000 Searches</div><div class="ach-desc">Complete 1,000 searches</div><div class="ach-rarity rarity-rare">Rare</div></div>
+        <div class="ach-item epic"><div class="ach-new">NEW</div><span class="ach-icon">💎</span><div class="ach-title">Speed Demon</div><div class="ach-desc">50 results in under 100ms</div><div class="ach-rarity rarity-epic">Epic</div></div>
+        <div class="ach-item locked"><span class="ach-icon">🎯</span><div class="ach-title">5,000 Searches</div><div class="ach-desc">Complete 5,000 searches</div><div class="ach-prog-mini"><div class="ach-prog-fill" style="width:25%"></div></div><div class="ach-prog-txt">1,248 / 5,000</div><div class="ach-rarity rarity-epic">Epic</div></div>
+        <div class="ach-item locked legendary"><span class="ach-icon">👑</span><div class="ach-title">10,000 Searches</div><div class="ach-desc">The ultimate searcher</div><div class="ach-prog-mini"><div class="ach-prog-fill" style="width:12%;background:var(--gold)"></div></div><div class="ach-prog-txt">1,248 / 10,000</div><div class="ach-rarity rarity-legendary">Legendary</div></div>
+        <div class="ach-item locked epic"><span class="ach-icon">🔮</span><div class="ach-title">Regex Wizard</div><div class="ach-desc">Use regex search 50 times</div><div class="ach-prog-mini"><div class="ach-prog-fill" style="width:20%"></div></div><div class="ach-prog-txt">10 / 50</div><div class="ach-rarity rarity-epic">Epic</div></div>
+      </div>
+    </div>
+
+    <!-- File Mastery -->
+    <div class="ach-section anim-fade-up">
+      <div class="ach-sec-hdr">
+        <span style="font-size:20px">📂</span>
+        <div class="ach-sec-title">File Mastery</div>
+        <span class="tag">4 / 8 earned</span>
+      </div>
+      <div class="ach-grid">
+        <div class="ach-item"><span class="ach-icon">📄</span><div class="ach-title">PDF Master</div><div class="ach-desc">Search 100 PDFs</div><div class="ach-rarity rarity-common">Common</div></div>
+        <div class="ach-item"><span class="ach-icon">📝</span><div class="ach-title">Word Wrangler</div><div class="ach-desc">Search 50 DOCX files</div><div class="ach-rarity rarity-common">Common</div></div>
+        <div class="ach-item"><span class="ach-icon">📊</span><div class="ach-title">Excel Hunter</div><div class="ach-desc">Search 50 XLSX files</div><div class="ach-rarity rarity-common">Common</div></div>
+        <div class="ach-item rare"><span class="ach-icon">📚</span><div class="ach-title">Bibliophile</div><div class="ach-desc">Search inside an EPUB</div><div class="ach-rarity rarity-rare">Rare</div></div>
+        <div class="ach-item locked epic"><span class="ach-icon">🗃️</span><div class="ach-title">Archive Diver</div><div class="ach-desc">Search 1,000+ files at once</div><div class="ach-prog-mini"><div class="ach-prog-fill" style="width:38%"></div></div><div class="ach-prog-txt">387 / 1,000</div><div class="ach-rarity rarity-epic">Epic</div></div>
+        <div class="ach-item locked"><span class="ach-icon">⚙️</span><div class="ach-title">Format Master</div><div class="ach-desc">Use all 30+ formats</div><div class="ach-rarity rarity-epic">Epic</div></div>
+        <div class="ach-item locked"><span class="ach-icon">🏗️</span><div class="ach-title">Multi-folder Pro</div><div class="ach-desc">Search across 5+ folders</div><div class="ach-rarity rarity-rare">Rare</div></div>
+        <div class="ach-item locked legendary"><span class="ach-icon">🌌</span><div class="ach-title">File Universe</div><div class="ach-desc">Search 100,000+ files</div><div class="ach-rarity rarity-legendary">Legendary</div></div>
+      </div>
+    </div>
+
+    <!-- Community -->
+    <div class="ach-section anim-fade-up">
+      <div class="ach-sec-hdr">
+        <span style="font-size:20px">💬</span>
+        <div class="ach-sec-title">Community</div>
+        <span class="tag">3 / 6 earned</span>
+      </div>
+      <div class="ach-grid">
+        <div class="ach-item"><span class="ach-icon">👋</span><div class="ach-title">First Post</div><div class="ach-desc">Make your first forum post</div><div class="ach-rarity rarity-common">Common</div></div>
+        <div class="ach-item"><span class="ach-icon">💬</span><div class="ach-title">Helpful Soul</div><div class="ach-desc">Get 10 upvotes on a post</div><div class="ach-rarity rarity-common">Common</div></div>
+        <div class="ach-item rare"><span class="ach-icon">🏆</span><div class="ach-title">Top Contributor</div><div class="ach-desc">Reach top 10 leaderboard</div><div class="ach-rarity rarity-rare">Rare</div></div>
+        <div class="ach-item locked"><span class="ach-icon">🗳️</span><div class="ach-title">Roadmap Voter</div><div class="ach-desc">Vote on 5 features</div><div class="ach-prog-mini"><div class="ach-prog-fill" style="width:40%"></div></div><div class="ach-prog-txt">2 / 5</div><div class="ach-rarity rarity-common">Common</div></div>
+        <div class="ach-item locked epic"><span class="ach-icon">🎙️</span><div class="ach-title">Community Voice</div><div class="ach-desc">Get a suggestion on roadmap</div><div class="ach-rarity rarity-epic">Epic</div></div>
+        <div class="ach-item locked legendary"><span class="ach-icon">👑</span><div class="ach-title">Community Legend</div><div class="ach-desc">Reach #1 on leaderboard</div><div class="ach-rarity rarity-legendary">Legendary</div></div>
+      </div>
+    </div>
+
+    <!-- Secret -->
+    <div class="ach-section anim-fade-up">
+      <div class="ach-sec-hdr">
+        <span style="font-size:20px">🔒</span>
+        <div class="ach-sec-title">Secret Achievements</div>
+        <span class="tag">0 / 4 found</span>
+      </div>
+      <div class="secret-grid">
+        <div class="secret-item"><span style="font-size:28px;display:block;margin-bottom:8px;filter:grayscale(1);opacity:0.3">❓</span><div style="font-size:11px;color:var(--text-4);font-family:var(--mono)">??? — Hidden</div></div>
+        <div class="secret-item"><span style="font-size:28px;display:block;margin-bottom:8px;filter:grayscale(1);opacity:0.3">❓</span><div style="font-size:11px;color:var(--text-4);font-family:var(--mono)">??? — Hidden</div></div>
+        <div class="secret-item"><span style="font-size:28px;display:block;margin-bottom:8px;filter:grayscale(1);opacity:0.3">❓</span><div style="font-size:11px;color:var(--text-4);font-family:var(--mono)">??? — Hidden</div></div>
+        <div class="secret-item"><span style="font-size:28px;display:block;margin-bottom:8px;filter:grayscale(1);opacity:0.3">❓</span><div style="font-size:11px;color:var(--text-4);font-family:var(--mono)">??? — Hidden</div></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="shared.js"></script>
+<script>
+injectNav('achievements.html');
+document.querySelectorAll('.ach-filter').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ach-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

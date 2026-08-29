@@ -1,0 +1,50 @@
+:root {
+  /* Brand Colors */
+  --bg:           #0f0520;
+  --bg-1:         #160730;
+  --bg-2:         #1e0a40;
+  --bg-3:         #270d52;
+  --surface:      #2a0f5e;
+  --surface-2:    #341470;
+  --surface-3:    #3d1a80;
+  --border:       rgba(139, 92, 246, 0.18);
+  --border-2:     rgba(139, 92, 246, 0.32);
+  --border-3:     rgba(139, 92, 246, 0.5);
+
+  /* Gold Accent */
+  --gold:         #f5a623;
+  --gold-2:       #fbbf24;
+  --gold-3:       #fcd34d;
+  --gold-dim:     rgba(245, 166, 35, 0.15);
+  --gold-glow:    rgba(245, 166, 35, 0.25);
+
+  /* Purple Accent */
+  --purple:       #7c3aed;
+  --purple-2:     #8b5cf6;
+  --purple-3:     #a78bfa;
+  --purple-dim:   rgba(124, 58, 237, 0.2);
+  --purple-glow:  rgba(124, 58, 237, 0.35);
+
+  /* Text */
+  --text:         #ffffff;
+  --text-2:       #c4b5d4;
+  --text-3:       #7c6d8e;
+  --text-4:       #4a3d5e;
+
+  /* Status */
+  --green:        #10b981;
+  --green-dim:    rgba(16, 185, 129, 0.12);
+  --red:          #ef4444;
+  --red-dim:      rgba(239, 68, 68, 0.12);
+
+  /* Typography */
+  --display:      system-ui, -apple-system, sans-serif;
+  --sans:         system-ui, -apple-system, sans-serif;
+  --mono:         ui-monospace, SFMono-Regular, monospace;
+
+  /* Layout */
+  --radius:       10px;
+  --radius-lg:    16px;
+  --radius-xl:    24px;
+  --max-w:        1200px;
+}

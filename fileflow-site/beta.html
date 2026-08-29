@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FileFlow — Join Beta</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:100px 2rem 4rem;position:relative}
+.auth-orb{position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(124,58,237,.2) 0%,transparent 70%);pointer-events:none}
+.auth-card{background:var(--bg-1);border:1px solid var(--border-2);border-radius:var(--radius-xl);padding:3rem;width:100%;max-width:480px;position:relative;z-index:1;box-shadow:0 40px 80px rgba(0,0,0,.5)}
+.oauth-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--bg-3);border:1px solid var(--border-2);border-radius:var(--radius);padding:12px;font-size:14px;color:var(--text-2);font-family:var(--sans);cursor:pointer;transition:all .2s}
+.oauth-btn:hover{border-color:var(--border-3);color:var(--text);background:var(--surface)}
+.divider-or{display:flex;align-items:center;gap:1rem;margin:1.5rem 0}
+.divider-or::before,.divider-or::after{content:'';flex:1;height:1px;background:var(--border)}
+.divider-or span{font-family:var(--mono);font-size:11px;color:var(--text-4)}
+.form-group{margin-bottom:1.25rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.perks{display:flex;flex-direction:column;gap:10px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:2rem}
+.perk{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-2)}
+select.input{appearance:none;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="auth-wrap">
+  <div class="auth-orb"></div>
+  <div class="auth-card">
+    <div style="text-align:center;margin-bottom:2rem">
+      <a href="index.html" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.02em">
+        <div class="nav-logo-icon" style="width:36px;height:36px"><svg viewBox="0 0 18 18" fill="none"><path d="M3 2h8l4 4v10H3V2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M11 2v4h4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+        File<span style="color:var(--gold)">Flow</span>
+      </a>
+    </div>
+    <div class="perks">
+      <div class="perk"><span style="color:var(--green)">✓</span>Free 14-day Pro trial — no credit card</div>
+      <div class="perk"><span style="color:var(--green)">✓</span>Early access to new features</div>
+      <div class="perk"><span style="color:var(--green)">✓</span>50% off when you convert to paid</div>
+    </div>
+    <h1 style="font-family:var(--display);font-size:26px;font-weight:700;color:var(--text);text-align:center;margin-bottom:.5rem;letter-spacing:-.02em">Join the Beta</h1>
+    <p style="font-size:14px;color:var(--text-3);text-align:center;margin-bottom:2rem">Create your free FileFlow account</p>
+    <div class="oauth-btn">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.1 9.2c0-.6-.1-1.2-.2-1.7H9v3.3h4.6c-.2 1-.8 1.9-1.7 2.4v2h2.7c1.6-1.5 2.5-3.7 2.5-6z" fill="#4285F4"/><path d="M9 18c2.3 0 4.2-.8 5.6-2.1l-2.7-2c-.8.5-1.7.8-2.9.8-2.2 0-4.1-1.5-4.8-3.6H1.4v2.1C2.9 15.9 5.8 18 9 18z" fill="#34A853"/><path d="M4.2 11.1C4 10.5 3.9 9.8 3.9 9s.1-1.5.3-2.1V4.8H1.4C.8 6 .5 7.5.5 9s.3 3 .9 4.2l2.8-2.1z" fill="#FBBC05"/><path d="M9 3.6c1.2 0 2.3.4 3.2 1.3l2.4-2.4C13.2.8 11.3 0 9 0 5.8 0 2.9 2.1 1.4 5.1l2.8 2.1C4.9 5.1 6.8 3.6 9 3.6z" fill="#EA4335"/></svg>
+      Continue with Google
+    </div>
+    <div class="divider-or"><span>or sign up with email</span></div>
+    <div class="form-row">
+      <div class="form-group"><label>First name</label><input type="text" class="input" placeholder="Alex"></div>
+      <div class="form-group"><label>Last name</label><input type="text" class="input" placeholder="Morgan"></div>
+    </div>
+    <div class="form-group"><label>Email address</label><input type="email" class="input" placeholder="alex@company.com"></div>
+    <div class="form-group"><label>Password</label><input type="password" class="input" placeholder="Min. 8 characters"></div>
+    <div class="form-group"><label>How will you use FileFlow?</label>
+      <select class="input"><option>Personal use</option><option>Professional / work</option><option>Legal / compliance</option><option>Research / academia</option><option>Development / testing</option></select>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:1.5rem">
+      <input type="checkbox" id="terms-check" style="margin-top:3px;accent-color:var(--gold)">
+      <label for="terms-check" style="font-size:13px;color:var(--text-3);margin:0;font-family:var(--sans);font-weight:400;cursor:pointer">I agree to FileFlow's <a href="terms.html" style="color:var(--gold)">Terms of Service</a> and <a href="privacy.html" style="color:var(--gold)">Privacy Policy</a></label>
+    </div>
+    <button class="btn-primary btn-lg" style="width:100%;justify-content:center" onclick="window.location.href='dashboard.html'">Create my free account</button>
+    <div style="text-align:center;margin-top:1.5rem;font-size:13px;color:var(--text-3)">Already have an account? <a href="login.html" style="color:var(--gold);text-decoration:none">Sign in</a></div>
+  </div>
+</div>
+<script src="shared.js"></script>
+<script>injectNav('');</script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FileFlow — About Us</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.about-hero{padding:8rem 0 5rem;text-align:center;position:relative;overflow:hidden;}
+.hero-orb-a{position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(124,58,237,0.2) 0%,transparent 65%);pointer-events:none;}
+.geo-a{position:absolute;width:0;height:0;border-style:solid;pointer-events:none;}
+.mission{padding:6rem 0;}
+.mission-inner{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;}
+.mission-visual{position:relative;}
+.m-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-xl);padding:2rem;}
+.m-card-inner{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1rem;}
+.s-demo-bar{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--border-2);border-radius:var(--radius);padding:10px 14px;margin-bottom:10px;}
+.s-demo-q{font-family:var(--mono);font-size:12px;color:var(--text-2);}
+.s-cursor{display:inline-block;width:2px;height:13px;background:var(--gold);animation:blink 1.2s step-end infinite;vertical-align:middle;margin-left:2px;}
+.s-result{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start;}
+.s-result:last-of-type{margin-bottom:0;}
+.sr-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:600;flex-shrink:0;}
+.sr-text{font-size:12px;color:var(--text-2);line-height:1.5;}
+.sr-text mark{background:rgba(245,166,35,0.2);color:var(--gold);border-radius:3px;padding:0 2px;}
+.m-quote{position:absolute;bottom:-20px;right:-20px;background:var(--bg-3);border:1px solid var(--border-2);border-radius:var(--radius-lg);padding:1rem 1.25rem;max-width:220px;box-shadow:0 8px 32px rgba(0,0,0,0.4);}
+.mq-t{font-size:13px;color:var(--text-2);line-height:1.5;font-style:italic;margin-bottom:8px;}
+.mq-a{font-family:var(--mono);font-size:10px;color:var(--text-4);}
+.mission-text p{font-size:16px;color:var(--text-2);line-height:1.8;font-weight:300;margin-bottom:1.25rem;}
+.values{padding:6rem 0;background:var(--bg-1);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.val-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-xl);padding:2rem;transition:all 0.3s;}
+.val-card:hover{border-color:var(--border-2);transform:translateY(-4px);}
+.val-n{font-family:var(--display);font-size:56px;font-weight:800;letter-spacing:-0.05em;line-height:1;margin-bottom:1rem;}
+.val-title{font-family:var(--display);font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.02em;margin-bottom:0.75rem;}
+.val-desc{font-size:14px;color:var(--text-2);line-height:1.7;font-weight:300;}
+.story{padding:6rem 0;}
+.timeline{position:relative;max-width:680px;margin:0 auto;}
+.timeline::before{content:'';position:absolute;left:27px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--border-2),var(--gold),var(--border-2));}
+.tl-item{display:flex;gap:2rem;margin-bottom:3rem;position:relative;}
+.tl-item:last-child{margin-bottom:0;}
+.tl-dot{width:54px;height:54px;border-radius:50%;background:var(--bg-2);border:2px solid var(--border-2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;position:relative;z-index:1;transition:all 0.3s;}
+.tl-item:hover .tl-dot{border-color:var(--gold);box-shadow:0 0 20px var(--gold-glow);}
+.tl-body{padding-top:8px;}
+.tl-date{font-family:var(--mono);font-size:11px;color:var(--text-4);margin-bottom:5px;}
+.tl-title{font-family:var(--display);font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.02em;margin-bottom:6px;}
+.tl-desc{font-size:14px;color:var(--text-2);line-height:1.65;font-weight:300;}
+.team-section{padding:6rem 0;background:var(--bg-1);border-top:1px solid var(--border);}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.team-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-xl);padding:2rem;text-align:center;transition:border-color 0.3s;}
+.team-card:hover{border-color:var(--border-2);}
+.team-av{width:80px;height:80px;border-radius:50%;margin:0 auto 1.25rem;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:26px;font-weight:800;color:var(--bg);}
+.team-name{font-family:var(--display);font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.02em;margin-bottom:4px;}
+.team-role{font-family:var(--mono);font-size:12px;color:var(--text-3);margin-bottom:1rem;}
+.team-bio{font-size:13px;color:var(--text-2);line-height:1.6;}
+.team-tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:1rem;}
+.about-cta{padding:7rem 0;text-align:center;position:relative;overflow:hidden;}
+.cta-orb-a{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(124,58,237,0.12) 0%,transparent 70%);pointer-events:none;}
+@media(max-width:900px){
+  .mission-inner{grid-template-columns:1fr;gap:3rem;}
+  .m-quote{display:none;}
+  .values-grid,.team-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="page-wrap">
+
+<section class="about-hero section">
+  <div class="hero-orb-a"></div>
+  <div class="geo-a" style="border-width:0 20px 35px 20px;border-color:transparent transparent var(--gold) transparent;opacity:0.1;top:28%;left:9%;animation:float 6s ease-in-out infinite"></div>
+  <div class="geo-a" style="border-width:0 14px 24px 14px;border-color:transparent transparent var(--purple-2) transparent;opacity:0.15;top:32%;right:7%;animation:float 8s ease-in-out infinite 1s"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <div class="badge" style="margin:0 auto 2rem;width:fit-content"><span class="badge-dot"></span>We're a small team with a big mission</div>
+    <h1 class="section-title" style="font-size:clamp(44px,7vw,80px);text-align:center;max-width:820px;margin:0 auto 1.25rem">
+      Built for people who live<br>inside their <span class="gold-text">files.</span>
+    </h1>
+    <p class="section-desc" style="text-align:center;margin:0 auto;max-width:540px;font-size:18px">We're on a mission to make working with files smarter, faster, and simpler. FileFlow is built for everyday people who just want their tools to work — effortlessly.</p>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="mission section">
+  <div class="container">
+    <div class="mission-inner">
+      <div class="mission-visual anim-fade-up">
+        <div class="m-card">
+          <div class="m-card-inner">
+            <div class="s-demo-bar">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="var(--gold)" stroke-width="1.3"/><path d="M9.5 9.5L12 12" stroke="var(--gold)" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <span class="s-demo-q">termination clause 30 days notice<span class="s-cursor"></span></span>
+            </div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--text-4);margin-bottom:10px">8 results in 0.06s</div>
+            <div class="s-result">
+              <div class="sr-icon" style="background:rgba(239,68,68,0.12);color:#f87171">PDF</div>
+              <div class="sr-text">...the <mark>termination clause</mark> requires <mark>30 days notice</mark> in writing, sent via certified mail...</div>
+            </div>
+            <div class="s-result">
+              <div class="sr-icon" style="background:var(--purple-dim);color:var(--purple-3)">DOC</div>
+              <div class="sr-text">§12.3 — Either party may invoke the <mark>termination clause</mark> with no less than <mark>30 days'</mark> written <mark>notice</mark>...</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <span class="tag green">50ms avg</span><span class="tag">0 files uploaded</span><span class="tag gold">30+ formats</span>
+          </div>
+        </div>
+        <div class="m-quote">
+          <div class="mq-t">"I used to open 200 contracts one by one. Now I find what I need in seconds."</div>
+          <div class="mq-a">— Legal Ops Lead, FileFlow beta user</div>
+        </div>
+      </div>
+      <div class="mission-text anim-fade-up">
+        <div class="section-label">Why FileFlow?</div>
+        <h2 class="section-title">File management<br>should be <span class="gold-text">effortless.</span></h2>
+        <p>FileFlow was created with one goal in mind: to make finding information inside your files instant, private, and painless. We're a small team passionate about simplifying the way people work with documents.</p>
+        <p>Our Keyword Search tool is the first of many features we're building. Instead of opening every file to find what you need, simply type your keywords and FileFlow will almost instantly locate the exact lines containing them — across every document in your folders.</p>
+        <p>Everything runs locally on your Windows PC. Your files never leave your machine. No cloud sync. No telemetry. Just a fast, private tool that works.</p>
+        <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap">
+          <a href="beta.html" class="btn-primary">Join the beta free</a>
+          <a href="roadmap.html" class="btn-ghost">See what's next →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="values section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:4rem" class="anim-fade-up">
+      <div class="section-label" style="justify-content:center">What we believe</div>
+      <h2 class="section-title" style="text-align:center">Our principles.</h2>
+    </div>
+    <div class="values-grid">
+      <div class="val-card anim-fade-up"><div class="val-n gold-text">01</div><div class="val-title">Privacy by default</div><div class="val-desc">Your files are yours. We will never build features that require uploading your documents to any server. FileFlow will always work 100% offline — that's non-negotiable.</div></div>
+      <div class="val-card anim-fade-up" style="transition-delay:0.1s"><div class="val-n" style="color:var(--purple-3)">02</div><div class="val-title">Speed as a feature</div><div class="val-desc">Waiting is a form of disrespect for the user's time. We obsess over search performance. Sub-50ms results on consumer hardware is our target — not a stretch goal.</div></div>
+      <div class="val-card anim-fade-up" style="transition-delay:0.2s"><div class="val-n" style="color:var(--green)">03</div><div class="val-title">Ship with honesty</div><div class="val-desc">We publish our roadmap publicly, show real progress bars, admit bugs openly, and price transparently. If something isn't ready, we say so — we never overpromise.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="story section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:4rem" class="anim-fade-up">
+      <div class="section-label" style="justify-content:center">Our story</div>
+      <h2 class="section-title" style="text-align:center">How we got here.</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-item anim-fade-up"><div class="tl-dot">💡</div><div class="tl-body"><div class="tl-date">Early 2025</div><div class="tl-title">The frustration</div><div class="tl-desc">Our founder spent an afternoon opening 150 PDF contracts one by one searching for a single clause. FileFlow started as a Python script written out of pure frustration that evening.</div></div></div>
+      <div class="tl-item anim-fade-up"><div class="tl-dot">🛠️</div><div class="tl-body"><div class="tl-date">Mid 2025</div><div class="tl-title">Building in public</div><div class="tl-desc">The script became an Electron app. We posted it in a few forums and got 200 downloads in the first week. The feedback was overwhelming — people wanted more formats, more speed, more everything.</div></div></div>
+      <div class="tl-item anim-fade-up"><div class="tl-dot">🚀</div><div class="tl-body"><div class="tl-date">October 2025</div><div class="tl-title">Public beta launch</div><div class="tl-desc">FileFlow v0.8.0 launched to public beta. Within 30 days we had 1,200 active users across 40 countries — all from word of mouth, no advertising spend.</div></div></div>
+      <div class="tl-item anim-fade-up"><div class="tl-dot">⚡</div><div class="tl-body"><div class="tl-date">April 2026</div><div class="tl-title">v0.9 and growing</div><div class="tl-desc">We shipped regex search, a 40% faster engine, and 8 new file formats. Community is now 4,000+ users. We're building towards v1.0 — our first stable, paid release.</div></div></div>
+      <div class="tl-item anim-fade-up"><div class="tl-dot" style="border-color:var(--gold);background:var(--gold-dim)">🌟</div><div class="tl-body"><div class="tl-date">Coming — late 2026</div><div class="tl-title">v1.0 — The full vision</div><div class="tl-desc">OCR for scanned documents, PDF editing, semantic AI search, and macOS support. FileFlow becomes the file management platform we always wanted to exist.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team-section section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:4rem" class="anim-fade-up">
+      <div class="section-label" style="justify-content:center">The team</div>
+      <h2 class="section-title" style="text-align:center">Small team,<br><span class="gold-text">big ambition.</span></h2>
+    </div>
+    <div class="team-grid">
+      <div class="team-card anim-fade-up"><div class="team-av" style="background:linear-gradient(135deg,var(--purple),var(--gold))">YK</div><div class="team-name">Yousef Karimi</div><div class="team-role">Founder & CEO · Product</div><div class="team-bio">Built the first version of FileFlow overnight out of frustration. Background in Python, search systems, and distributed computing.</div><div class="team-tags"><span class="tag">Python</span><span class="tag">Product</span><span class="tag gold">Founder</span></div></div>
+      <div class="team-card anim-fade-up" style="transition-delay:0.1s"><div class="team-av" style="background:linear-gradient(135deg,var(--purple-2),var(--purple))">SR</div><div class="team-name">Sara Raza</div><div class="team-role">Lead Engineer · Search Engine</div><div class="team-bio">Responsible for the core search pipeline. Obsessed with performance. Previously worked on full-text indexing infrastructure at scale.</div><div class="team-tags"><span class="tag">Rust</span><span class="tag">Python</span><span class="tag">Search</span></div></div>
+      <div class="team-card anim-fade-up" style="transition-delay:0.2s"><div class="team-av" style="background:linear-gradient(135deg,var(--gold),var(--gold-2))">MA</div><div class="team-name">Malik Ahmed</div><div class="team-role">Design & Frontend</div><div class="team-bio">Responsible for every pixel you see in FileFlow. Believes good design is invisible — you only notice bad design. Figma and CSS perfectionist.</div><div class="team-tags"><span class="tag">Figma</span><span class="tag">CSS</span><span class="tag">UX</span></div></div>
+    </div>
+    <div style="text-align:center;margin-top:3rem" class="anim-fade-up">
+      <p style="font-size:15px;color:var(--text-2);margin-bottom:1.5rem">We're a small team. Every user matters to us personally.</p>
+      <a href="contact.html" class="btn-ghost">Talk to us directly →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="about-cta section">
+  <div class="cta-orb-a"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <div class="anim-fade-up">
+      <div class="section-label" style="justify-content:center">Get started</div>
+      <h2 class="section-title" style="font-size:clamp(36px,5vw,60px);text-align:center;max-width:640px;margin:0 auto 1rem">Ready to stop opening<br>files one by one?</h2>
+      <p style="font-size:17px;color:var(--text-2);text-align:center;margin-bottom:2.5rem;font-weight:300">Join 4,000+ users already searching smarter.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+        <a href="beta.html" class="btn-primary btn-lg">Join the beta — free</a>
+        <a href="screenshots.html" class="btn-ghost btn-lg">See it in action →</a>
+      </div>
+      <p style="font-family:var(--mono);font-size:12px;color:var(--text-4);text-align:center;margin-top:1.25rem">Windows 10 / 11 · 12 MB download · No cloud, ever</p>
+    </div>
+  </div>
+</section>
+
+</div>
+<div id="footer-placeholder"></div>
+<script src="shared.js"></script>
+<script>injectNav('about.html'); injectFooter();</script>
+</body>
+</html>

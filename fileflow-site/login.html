@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FileFlow — Login</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.auth-wrap{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:68px}
+.auth-left{background:var(--bg-2);border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;padding:4rem;position:relative;overflow:hidden}
+.auth-left-orb{position:absolute;bottom:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(ellipse,rgba(245,166,35,.08) 0%,transparent 70%)}
+.auth-right{display:flex;align-items:center;justify-content:center;padding:4rem 3rem;background:var(--bg)}
+.auth-card{background:var(--bg-1);border:1px solid var(--border-2);border-radius:var(--radius-xl);padding:3rem;width:100%;max-width:420px;box-shadow:0 40px 80px rgba(0,0,0,.4)}
+.oauth-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--bg-3);border:1px solid var(--border-2);border-radius:var(--radius);padding:12px;font-size:14px;color:var(--text-2);font-family:var(--sans);cursor:pointer;transition:all .2s;margin-bottom:10px}
+.oauth-btn:hover{border-color:var(--border-3);color:var(--text);background:var(--surface)}
+.divider-or{display:flex;align-items:center;gap:1rem;margin:1.5rem 0}
+.divider-or::before,.divider-or::after{content:'';flex:1;height:1px;background:var(--border)}
+.divider-or span{font-family:var(--mono);font-size:11px;color:var(--text-4)}
+.form-group{margin-bottom:1.25rem}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:14px}
+.feature-list li{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--text-2)}
+.fl-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="auth-wrap">
+  <div class="auth-left">
+    <div class="auth-left-orb"></div>
+    <div style="position:relative;z-index:1">
+      <a href="index.html" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;margin-bottom:3rem">
+        <div class="nav-logo-icon"><svg viewBox="0 0 18 18" fill="none"><path d="M3 2h8l4 4v10H3V2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M11 2v4h4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+        <span style="font-family:var(--display);font-size:18px;font-weight:700;color:var(--text)">File<span style="color:var(--gold)">Flow</span></span>
+      </a>
+      <h2 style="font-family:var(--display);font-size:42px;font-weight:800;letter-spacing:-.04em;line-height:1.1;color:var(--text);margin-bottom:1rem">Welcome<br>back.</h2>
+      <p style="font-size:16px;color:var(--text-2);line-height:1.7;margin-bottom:2.5rem;max-width:380px">Your files are waiting. Search across thousands of documents instantly — no cloud, no delay.</p>
+      <ul class="feature-list">
+        <li><div class="fl-icon" style="background:var(--gold-dim)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="var(--gold)" stroke-width="1.2"/><path d="M9.5 9.5l2.5 2.5" stroke="var(--gold)" stroke-width="1.2" stroke-linecap="round"/></svg></div>Search 30+ file formats in milliseconds</li>
+        <li><div class="fl-icon" style="background:var(--green-dim)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="2" stroke="var(--green)" stroke-width="1.2"/><path d="M5 7l2 2 3-3" stroke="var(--green)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>100% local — your files never leave your PC</li>
+        <li><div class="fl-icon" style="background:var(--purple-dim)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2l1.5 2.5H12l-2 2 .8 3L7 8.2 4.2 9.5 5 6.5 3 4.5h3.5L7 2z" stroke="var(--purple-3)" stroke-width="1.2" stroke-linejoin="round"/></svg></div>Earn achievements as you search</li>
+      </ul>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-card">
+      <h2 style="font-family:var(--display);font-size:26px;font-weight:700;color:var(--text);letter-spacing:-.02em;margin-bottom:.5rem">Sign in</h2>
+      <p style="font-size:14px;color:var(--text-3);margin-bottom:2rem">Welcome back to FileFlow</p>
+      <div class="oauth-btn">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.1 9.2c0-.6-.1-1.2-.2-1.7H9v3.3h4.6c-.2 1-.8 1.9-1.7 2.4v2h2.7c1.6-1.5 2.5-3.7 2.5-6z" fill="#4285F4"/><path d="M9 18c2.3 0 4.2-.8 5.6-2.1l-2.7-2c-.8.5-1.7.8-2.9.8-2.2 0-4.1-1.5-4.8-3.6H1.4v2.1C2.9 15.9 5.8 18 9 18z" fill="#34A853"/><path d="M4.2 11.1C4 10.5 3.9 9.8 3.9 9s.1-1.5.3-2.1V4.8H1.4C.8 6 .5 7.5.5 9s.3 3 .9 4.2l2.8-2.1z" fill="#FBBC05"/><path d="M9 3.6c1.2 0 2.3.4 3.2 1.3l2.4-2.4C13.2.8 11.3 0 9 0 5.8 0 2.9 2.1 1.4 5.1l2.8 2.1C4.9 5.1 6.8 3.6 9 3.6z" fill="#EA4335"/></svg>
+        Continue with Google
+      </div>
+      <div class="divider-or"><span>or</span></div>
+      <div class="form-group"><label>Email</label><input type="email" class="input" placeholder="alex@company.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" class="input" placeholder="••••••••"></div>
+      <div style="text-align:right;margin-bottom:1rem"><a href="#" style="font-size:12px;color:var(--gold);text-decoration:none">Forgot password?</a></div>
+      <button class="btn-primary btn-lg" style="width:100%;justify-content:center" onclick="window.location.href='dashboard.html'">Sign in</button>
+      <div style="text-align:center;margin-top:1.5rem;font-size:13px;color:var(--text-3)">Don't have an account? <a href="beta.html" style="color:var(--gold);text-decoration:none">Join the beta</a></div>
+    </div>
+  </div>
+</div>
+<script src="shared.js"></script>
+<script>injectNav('');</script>
+</body>
+</html>

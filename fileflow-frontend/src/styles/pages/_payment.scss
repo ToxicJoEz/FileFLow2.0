@@ -1,0 +1,390 @@
+.pay-wrap {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 480px;
+}
+.pay-left {
+  background: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-3) 60%, var(--surface) 100%);
+  padding: 6rem 4rem 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.pay-orb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(ellipse, rgba(124,58,237,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+.pay-geo {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  pointer-events: none;
+}
+.pay-logo {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 2.5rem;
+}
+.pay-summary {
+  position: relative;
+  z-index: 1;
+}
+.trial-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--green-dim);
+  border: 1px solid rgba(16,185,129,0.25);
+  border-radius: 100px;
+  padding: 8px 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--green);
+  margin-bottom: 1.5rem;
+}
+.pay-plan-box {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+}
+.pbox-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+}
+.pbox-name {
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+.pbox-desc {
+  font-size: 14px;
+  color: var(--text-2);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+.pbox-price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+}
+.pbox-amount {
+  font-family: var(--display);
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--gold);
+}
+.pbox-period {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-3);
+}
+.pbox-feats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+.pbox-feat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-2);
+}
+.pbox-feat svg {
+  color: var(--green);
+  flex-shrink: 0;
+}
+.pbox-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 1.25rem 0;
+}
+.pbox-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+.pbox-line.total {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.pbox-line.total span:last-child {
+  color: var(--gold);
+}
+.pay-trust {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-4);
+}
+.pay-right {
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  padding: 5rem 3rem 3rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.pay-form-title {
+  font-family: var(--display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+.pay-form-sub {
+  font-size: 14px;
+  color: var(--text-2);
+  margin-bottom: 2rem;
+}
+.plan-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 5px;
+  margin-bottom: 2rem;
+}
+.ptoggle-opt {
+  padding: 10px;
+  text-align: center;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+.ptoggle-opt.on {
+  background: var(--gold-dim);
+  border-color: rgba(245,166,35,0.3);
+}
+.ptoggle-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.ptoggle-price {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-4);
+  margin-top: 2px;
+}
+.ptoggle-opt.on .ptoggle-name { color: var(--gold); }
+.ptoggle-opt.on .ptoggle-price { color: var(--gold); opacity: 0.7; }
+.fsec-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 1.75rem 0 1rem;
+}
+.fgroup { margin-bottom: 1rem; }
+.frow2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.frow3 {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 10px;
+}
+.card-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-3);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.card-wrap:focus-within {
+  border-color: var(--purple-2);
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+}
+.card-wrap input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--text);
+}
+.card-wrap input::placeholder { color: var(--text-4); }
+.card-chips {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.chip {
+  width: 34px;
+  height: 21px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 7px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+}
+.secure-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-4);
+  margin-top: 12px;
+}
+.pay-btn {
+  width: 100%;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 15px;
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 24px var(--gold-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.pay-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 36px var(--gold-glow);
+}
+.pay-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+.pay-btn-note {
+  font-size: 11px;
+  color: var(--bg);
+  opacity: 0.7;
+  font-family: var(--mono);
+  font-weight: 400;
+}
+.pay-success {
+  display: none;
+  text-align: center;
+  padding: 1rem 0;
+}
+.pay-success.on { display: block; }
+.sring {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--green-dim);
+  border: 2px solid var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 32px;
+  box-shadow: 0 0 40px rgba(16,185,129,0.2);
+}
+.s-title {
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+.s-sub {
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+.s-steps {
+  text-align: left;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+.s-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.s-step:last-child { margin-bottom: 0; }
+.s-step-n {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--gold-dim);
+  border: 1px solid rgba(245,166,35,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.s-step-t {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.55;
+}
+.s-step-t strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .pay-wrap { grid-template-columns: 1fr; }
+  .pay-left { display: none; }
+  .pay-right { padding: 6rem 1.5rem 3rem; border-left: none; justify-content: flex-start; }
+  .frow2, .frow3 { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FileFlow — Blog</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.blog-hero { padding: 7rem 0 3rem; }
+.blog-cats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 2rem; }
+.cat-btn { background: var(--bg-2); border: 1px solid var(--border); border-radius: 100px; padding: 7px 18px; font-family: var(--mono); font-size: 12px; color: var(--text-2); cursor: pointer; transition: all 0.2s; }
+.cat-btn:hover { border-color: var(--border-2); color: var(--text); }
+.cat-btn.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+.blog-layout { display: grid; grid-template-columns: 1fr 300px; gap: 3rem; padding: 3rem 0 6rem; }
+
+.featured-post { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; margin-bottom: 2rem; display: grid; grid-template-columns: 1fr 1fr; transition: border-color 0.3s; cursor: pointer; }
+.featured-post:hover { border-color: var(--border-2); }
+.featured-img { background: linear-gradient(135deg, var(--surface) 0%, var(--bg-3) 100%); min-height: 280px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+.featured-img-icon { font-size: 72px; opacity: 0.3; }
+.featured-img-pattern { position: absolute; inset: 0; background-image: linear-gradient(rgba(139,92,246,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.1) 1px, transparent 1px); background-size: 32px 32px; }
+.featured-body { padding: 2.5rem; display: flex; flex-direction: column; justify-content: center; }
+.featured-body .post-meta { margin-bottom: 1rem; }
+.featured-body h2 { font-family: var(--display); font-size: 24px; font-weight: 700; color: var(--text); line-height: 1.3; letter-spacing: -0.02em; margin-bottom: 1rem; }
+.featured-body p { font-size: 14px; color: var(--text-2); line-height: 1.7; margin-bottom: 1.5rem; }
+
+.posts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.post-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.2s; }
+.post-card:hover { border-color: var(--border-2); transform: translateY(-3px); }
+.post-thumb { height: 140px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; font-size: 40px; }
+.post-thumb-pattern { position: absolute; inset: 0; background-image: linear-gradient(rgba(139,92,246,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.08) 1px, transparent 1px); background-size: 24px 24px; }
+.post-body { padding: 1.25rem; }
+.post-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.post-author { font-family: var(--mono); font-size: 11px; color: var(--text-3); }
+.post-date { font-family: var(--mono); font-size: 11px; color: var(--text-4); }
+.post-read { font-family: var(--mono); font-size: 11px; color: var(--text-4); }
+.post-title { font-family: var(--display); font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; letter-spacing: -0.01em; margin-bottom: 6px; }
+.post-excerpt { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+/* Sidebar */
+.blog-sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+.sidebar-box { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; }
+.sidebar-box h4 { font-family: var(--display); font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 1rem; }
+.sidebar-input-row { display: flex; gap: 8px; }
+.sidebar-input-row input { flex: 1; min-width: 0; }
+.sidebar-input-row button { flex-shrink: 0; background: var(--gold); color: var(--bg); border: none; padding: 10px 14px; border-radius: var(--radius); font-size: 13px; font-weight: 600; cursor: pointer; }
+.pop-post { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+.pop-post:last-child { border-bottom: none; padding-bottom: 0; }
+.pop-post:first-child { padding-top: 0; }
+.pop-num { font-family: var(--mono); font-size: 18px; font-weight: 700; color: var(--text-4); flex-shrink: 0; line-height: 1; margin-top: 2px; width: 22px; }
+.pop-title { font-size: 13px; color: var(--text-2); line-height: 1.5; transition: color 0.2s; }
+.pop-post:hover .pop-title { color: var(--gold); }
+.tags-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Article view */
+.article-view { display: none; }
+.article-view.active { display: block; }
+.list-view.hidden { display: none; }
+.article-back { display: inline-flex; align-items: center; gap: 8px; color: var(--text-2); text-decoration: none; font-size: 14px; margin-bottom: 2rem; cursor: pointer; transition: color 0.2s; }
+.article-back:hover { color: var(--gold); }
+.article-hdr { margin-bottom: 3rem; }
+.article-title { font-family: var(--display); font-size: clamp(28px, 4vw, 48px); font-weight: 800; color: var(--text); line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 1rem; }
+.article-meta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-top: 1.5rem; }
+.article-body { font-size: 16px; color: var(--text-2); line-height: 1.8; font-weight: 300; max-width: 700px; }
+.article-body h2 { font-family: var(--display); font-size: 24px; font-weight: 700; color: var(--text); margin: 2.5rem 0 1rem; letter-spacing: -0.02em; }
+.article-body h3 { font-family: var(--display); font-size: 18px; font-weight: 600; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body p { margin-bottom: 1.25rem; }
+.article-body code { font-family: var(--mono); font-size: 13px; background: var(--bg-3); padding: 2px 6px; border-radius: 5px; color: var(--purple-3); }
+.article-body pre { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; }
+.article-body pre code { background: none; padding: 0; color: var(--purple-3); font-size: 13px; }
+.article-body blockquote { border-left: 3px solid var(--gold); padding: 0.5rem 0 0.5rem 1.5rem; margin: 1.5rem 0; font-style: italic; color: var(--text-2); }
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="page-wrap">
+
+<section class="blog-hero section">
+  <div class="container">
+    <div class="section-label">Blog</div>
+    <h1 class="section-title">Tips, updates &<br><span class="gold-text">deep dives.</span></h1>
+    <div class="blog-cats">
+      <button class="cat-btn active" data-cat="all">All</button>
+      <button class="cat-btn" data-cat="product">Product updates</button>
+      <button class="cat-btn" data-cat="tutorial">Tutorials</button>
+      <button class="cat-btn" data-cat="productivity">Productivity</button>
+      <button class="cat-btn" data-cat="build">Behind the build</button>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <!-- LIST VIEW -->
+  <div class="list-view" id="list-view">
+    <div class="blog-layout">
+      <div>
+        <!-- Featured -->
+        <div class="featured-post anim-fade-up" data-cat="product" onclick="showArticle()">
+          <div class="featured-img">
+            <div class="featured-img-pattern"></div>
+            <span class="featured-img-icon">🔍</span>
+          </div>
+          <div class="featured-body">
+            <div class="post-meta"><span class="tag gold">Product Update</span><span class="post-date">Apr 20, 2026</span></div>
+            <h2>FileFlow v0.9 — Regex search, faster engine, and new file formats</h2>
+            <p>Our biggest update yet. v0.9 introduces regex and Boolean search modes, a 40% faster engine, and support for 8 new file types including EPUB and ODS.</p>
+            <span style="color:var(--gold);font-size:14px;font-weight:500">Read the full update →</span>
+          </div>
+        </div>
+        <!-- Grid -->
+        <div class="posts-grid">
+          <div class="post-card anim-fade-up" data-cat="tutorial" onclick="showArticle()">
+            <div class="post-thumb" style="background:linear-gradient(135deg,var(--bg-3),var(--surface))"><div class="post-thumb-pattern"></div>📄</div>
+            <div class="post-body">
+              <div class="post-meta"><span class="tag">Tutorial</span><span class="post-read">5 min</span></div>
+              <div class="post-title">How to search inside scanned PDFs</div>
+              <div class="post-excerpt">OCR is coming in v1.0. Until then, here's how to pre-process your scans for searchability.</div>
+            </div>
+          </div>
+          <div class="post-card anim-fade-up" data-cat="productivity" onclick="showArticle()">
+            <div class="post-thumb" style="background:linear-gradient(135deg,var(--surface-2),var(--bg-2))"><div class="post-thumb-pattern"></div>⚡</div>
+            <div class="post-body">
+              <div class="post-meta"><span class="tag">Productivity</span><span class="post-read">4 min</span></div>
+              <div class="post-title">5 search habits that will save you hours every week</div>
+              <div class="post-excerpt">From date filters to regex shortcuts, here's how power users get the most out of FileFlow.</div>
+            </div>
+          </div>
+          <div class="post-card anim-fade-up" data-cat="build" onclick="showArticle()">
+            <div class="post-thumb" style="background:linear-gradient(135deg,var(--bg-3),var(--surface-3))"><div class="post-thumb-pattern"></div>🏗️</div>
+            <div class="post-body">
+              <div class="post-meta"><span class="tag">Behind the build</span><span class="post-read">8 min</span></div>
+              <div class="post-title">Why we chose Electron + Python for the desktop app</div>
+              <div class="post-excerpt">The tradeoffs, the surprises, and why this stack lets us ship fast without sacrificing performance.</div>
+            </div>
+          </div>
+          <div class="post-card anim-fade-up" data-cat="product" onclick="showArticle()">
+            <div class="post-thumb" style="background:linear-gradient(135deg,var(--bg-2),var(--surface))"><div class="post-thumb-pattern"></div>🔒</div>
+            <div class="post-body">
+              <div class="post-meta"><span class="tag">Privacy</span><span class="post-read">3 min</span></div>
+              <div class="post-title">What "100% offline" actually means in FileFlow</div>
+              <div class="post-excerpt">A technical breakdown of why your files never touch our servers — or anyone else's.</div>
+            </div>
+          </div>
+          <div class="post-card anim-fade-up" data-cat="tutorial" onclick="showArticle()">
+            <div class="post-thumb" style="background:linear-gradient(135deg,var(--surface-3),var(--bg-3))"><div class="post-thumb-pattern"></div>📊</div>
+            <div class="post-body">
+              <div class="post-meta"><span class="tag">Tutorial</span><span class="post-read">6 min</span></div>
+              <div class="post-title">Searching inside Excel files: tips and edge cases</div>
+              <div class="post-excerpt">Merged cells, hidden sheets, formula values — here's what FileFlow reads and what to watch out for.</div>
+            </div>
+          </div>
+          <div class="post-card anim-fade-up" data-cat="product" onclick="showArticle()">
+            <div class="post-thumb" style="background:linear-gradient(135deg,var(--bg-3),var(--surface-2))"><div class="post-thumb-pattern"></div>🌟</div>
+            <div class="post-body">
+              <div class="post-meta"><span class="tag">Product</span><span class="post-read">2 min</span></div>
+              <div class="post-title">Introducing achievements — making search fun</div>
+              <div class="post-excerpt">We added an achievement system to FileFlow. Here's why gamification might actually improve your workflow.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="blog-sidebar">
+        <div class="sidebar-box">
+          <h4>📬 Newsletter</h4>
+          <p style="font-size:13px;color:var(--text-2);margin-bottom:1rem">Get new posts in your inbox. No spam, ever.</p>
+          <div class="sidebar-input-row">
+            <input class="input" type="email" placeholder="your@email.com" style="font-size:13px;padding:9px 12px">
+            <button>→</button>
+          </div>
+        </div>
+        <div class="sidebar-box">
+          <h4>🔥 Popular posts</h4>
+          <div class="pop-post" onclick="showArticle()"><span class="pop-num">01</span><span class="pop-title">FileFlow v0.9 — Regex search, faster engine, and new file formats</span></div>
+          <div class="pop-post" onclick="showArticle()"><span class="pop-num">02</span><span class="pop-title">Why we chose Electron + Python for the desktop app</span></div>
+          <div class="pop-post" onclick="showArticle()"><span class="pop-num">03</span><span class="pop-title">5 search habits that will save you hours every week</span></div>
+          <div class="pop-post" onclick="showArticle()"><span class="pop-num">04</span><span class="pop-title">What "100% offline" actually means in FileFlow</span></div>
+        </div>
+        <div class="sidebar-box">
+          <h4>🏷️ Topics</h4>
+          <div class="tags-cloud">
+            <span class="tag" style="cursor:pointer">Search tips</span>
+            <span class="tag" style="cursor:pointer">PDF</span>
+            <span class="tag gold" style="cursor:pointer">v0.9 update</span>
+            <span class="tag" style="cursor:pointer">Privacy</span>
+            <span class="tag" style="cursor:pointer">Productivity</span>
+            <span class="tag" style="cursor:pointer">Excel</span>
+            <span class="tag" style="cursor:pointer">Regex</span>
+            <span class="tag" style="cursor:pointer">Behind the build</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARTICLE VIEW -->
+  <div class="article-view" id="article-view">
+    <div style="padding: 3rem 0 6rem; display:grid; grid-template-columns:1fr 300px; gap:3rem; align-items:start">
+      <div>
+        <div class="article-back" onclick="hideArticle()">← Back to blog</div>
+        <div class="article-hdr">
+          <div class="post-meta"><span class="tag gold">Product Update</span><span class="post-date">Apr 20, 2026</span><span class="post-read">7 min read</span></div>
+          <h1 class="article-title">FileFlow v0.9 — Regex search, faster engine, and new file formats</h1>
+          <div class="article-meta">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--purple-dim);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--purple-3)">FF</div>
+              <div><div style="font-size:14px;font-weight:500">FileFlow Team</div><div style="font-family:var(--mono);font-size:11px;color:var(--text-3)">file-flow.com</div></div>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <span class="tag" style="cursor:pointer">Share</span>
+              <span class="tag" style="cursor:pointer">Copy link</span>
+            </div>
+          </div>
+        </div>
+        <div class="article-body">
+          <p>Today we're shipping FileFlow v0.9 — our biggest update since launch. This release focuses on three things: more powerful search modes, a significantly faster engine, and broader file format support.</p>
+          <h2>What's new in v0.9</h2>
+          <h3>Regex & Boolean search</h3>
+          <p>You can now use regular expressions directly in the search bar. Wrap your query in forward slashes to activate regex mode:</p>
+          <pre><code>/quarterly.{0,20}revenue/i</code></pre>
+          <p>Boolean operators also work as expected. Use <code>AND</code>, <code>OR</code>, and <code>NOT</code> to build complex queries:</p>
+          <pre><code>"invoice" AND ("2024" OR "2025") NOT "draft"</code></pre>
+          <h3>40% faster search engine</h3>
+          <p>We rewrote the core file-reading pipeline in Cython and switched to parallel processing for multi-folder searches. On a test set of 50,000 mixed documents, average search time dropped from 140ms to 82ms.</p>
+          <blockquote>Our goal is sub-50ms on any consumer-grade Windows PC for collections up to 100,000 files. We're not there yet, but v0.9 gets us closer.</blockquote>
+          <h3>8 new file formats</h3>
+          <p>FileFlow now reads inside: <code>.epub</code>, <code>.ods</code>, <code>.odt</code>, <code>.odp</code>, <code>.pages</code>, <code>.numbers</code>, <code>.key</code>, and <code>.msg</code> (Outlook email exports).</p>
+          <h2>How to update</h2>
+          <p>If you have auto-update enabled, FileFlow will prompt you on next launch. Otherwise, download the installer from your dashboard or from the beta page. Your settings and search history are preserved.</p>
+          <p>As always, your files never leave your machine. The update is distributed as a signed Windows installer — no cloud sync, no telemetry changes.</p>
+        </div>
+      </div>
+      <div class="blog-sidebar" style="position:sticky;top:90px">
+        <div class="sidebar-box">
+          <h4>📬 Newsletter</h4>
+          <p style="font-size:13px;color:var(--text-2);margin-bottom:1rem">Get new posts in your inbox.</p>
+          <div class="sidebar-input-row">
+            <input class="input" type="email" placeholder="your@email.com" style="font-size:13px;padding:9px 12px">
+            <button>→</button>
+          </div>
+        </div>
+        <div class="sidebar-box">
+          <h4>🏷️ Topics</h4>
+          <div class="tags-cloud">
+            <span class="tag gold" style="cursor:pointer">v0.9 update</span>
+            <span class="tag" style="cursor:pointer">Search tips</span>
+            <span class="tag" style="cursor:pointer">Regex</span>
+            <span class="tag" style="cursor:pointer">Performance</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<div id="footer-placeholder"></div>
+<script src="shared.js"></script>
+<script>
+injectNav('blog.html');
+injectFooter();
+
+// Working category filter
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.cat;
+    const allCards = document.querySelectorAll('.post-card, .featured-post');
+    allCards.forEach(card => {
+      const cardCat = card.dataset.cat || 'all';
+      const show = cat === 'all' || cardCat === cat;
+      card.style.display = show ? '' : 'none';
+      card.style.opacity = show ? '1' : '0';
+    });
+  });
+});
+function showArticle() {
+  document.getElementById('list-view').classList.add('hidden');
+  document.getElementById('article-view').classList.add('active');
+  window.scrollTo(0,0);
+}
+function hideArticle() {
+  document.getElementById('list-view').classList.remove('hidden');
+  document.getElementById('article-view').classList.remove('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

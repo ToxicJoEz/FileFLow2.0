@@ -1,0 +1,211 @@
+.cl-hero {
+  padding: 7rem 0 3rem;
+  position: relative;
+}
+.cl-orb {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 300px;
+  background: radial-gradient(ellipse, rgba(124,58,237,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cl-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 4rem;
+  padding-bottom: 7rem;
+  align-items: start;
+}
+.cl-sidebar {
+  position: sticky;
+  top: 90px;
+}
+.cl-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+.cl-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: var(--text-3);
+  text-decoration: none;
+  transition: all 0.2s;
+  margin-bottom: 3px;
+  border-left: 2px solid transparent;
+}
+.cl-link:hover {
+  color: var(--text-2);
+  background: var(--bg-2);
+}
+.cl-link.cur {
+  color: var(--gold);
+  border-left-color: var(--gold);
+  background: var(--gold-dim);
+}
+.cl-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.cl-sub {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-top: 1.5rem;
+}
+.cl-sub h4 {
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.cl-sub p {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+.cl-sub-row {
+  display: flex;
+  gap: 6px;
+}
+.cl-sub-row input {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  padding: 8px 10px;
+}
+.cl-sub-row button {
+  flex-shrink: 0;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cl-entry {
+  margin-bottom: 5rem;
+  scroll-margin-top: 90px;
+}
+.cl-hdr {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.cl-ver {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.03em;
+}
+.cl-date {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-4);
+}
+.cl-grp {
+  margin-bottom: 1.5rem;
+}
+.cl-grp-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cl-grp-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.cl-grp-title.new { color: var(--green); }
+.cl-grp-title.fix { color: var(--gold); }
+.cl-grp-title.imp { color: var(--purple-3); }
+.cl-items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cl-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+.cl-item-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+.cl-item-dot.new { background: var(--green); }
+.cl-item-dot.fix { background: var(--gold); }
+.cl-item-dot.imp { background: var(--purple-3); }
+.cl-item strong {
+  color: var(--text);
+  font-weight: 500;
+}
+.pro {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--gold);
+  background: var(--gold-dim);
+  border: 1px solid rgba(245,166,35,0.2);
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.cl-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 1rem 0 2rem;
+}
+
+@media (max-width: 900px) {
+  .cl-layout { grid-template-columns: 1fr; }
+  .cl-sidebar {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .cl-label { display: none; }
+  .cl-link {
+    padding: 5px 12px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    border-left: none;
+  }
+  .cl-sub { width: 100%; }
+}

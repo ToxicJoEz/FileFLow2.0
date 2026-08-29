@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FileFlow — Checkout</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.pay-wrap { min-height:100vh; display:grid; grid-template-columns:1fr 480px; }
+
+/* LEFT */
+.pay-left { background:linear-gradient(160deg,var(--bg-1) 0%,var(--bg-3) 60%,var(--surface) 100%); padding:6rem 4rem 4rem; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; }
+.pay-orb { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:500px; height:500px; background:radial-gradient(ellipse,rgba(124,58,237,0.18) 0%,transparent 70%); pointer-events:none; }
+.pay-geo { position:absolute; width:0; height:0; border-style:solid; pointer-events:none; }
+.pay-logo { position:relative; z-index:1; margin-bottom:2.5rem; }
+.pay-summary { position:relative; z-index:1; }
+.trial-pill { display:inline-flex; align-items:center; gap:8px; background:var(--green-dim); border:1px solid rgba(16,185,129,0.25); border-radius:100px; padding:8px 16px; font-family:var(--mono); font-size:12px; color:var(--green); margin-bottom:1.5rem; }
+.pay-plan-box { background:rgba(255,255,255,0.04); border:1px solid var(--border-2); border-radius:var(--radius-xl); padding:2rem; }
+.pbox-label { font-family:var(--mono); font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.75rem; }
+.pbox-name { font-family:var(--display); font-size:26px; font-weight:800; color:var(--text); letter-spacing:-0.03em; margin-bottom:4px; }
+.pbox-desc { font-size:14px; color:var(--text-2); margin-bottom:1.5rem; line-height:1.6; }
+.pbox-price { display:flex; align-items:baseline; gap:6px; margin-bottom:1.5rem; }
+.pbox-amount { font-family:var(--display); font-size:44px; font-weight:800; letter-spacing:-0.04em; color:var(--gold); }
+.pbox-period { font-family:var(--mono); font-size:13px; color:var(--text-3); }
+.pbox-feats { display:flex; flex-direction:column; gap:10px; margin-bottom:1.5rem; }
+.pbox-feat { display:flex; align-items:center; gap:10px; font-size:14px; color:var(--text-2); }
+.pbox-feat svg { color:var(--green); flex-shrink:0; }
+.pbox-divider { height:1px; background:var(--border); margin:1.25rem 0; }
+.pbox-line { display:flex; justify-content:space-between; font-size:13px; color:var(--text-2); margin-bottom:8px; }
+.pbox-line.total { font-size:15px; font-weight:600; color:var(--text); }
+.pbox-line.total span:last-child { color:var(--gold); }
+.pay-trust { display:flex; gap:1.25rem; flex-wrap:wrap; position:relative; z-index:1; }
+.trust-item { display:flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; color:var(--text-4); }
+
+/* RIGHT */
+.pay-right { background:var(--bg); border-left:1px solid var(--border); padding:5rem 3rem 3rem; overflow-y:auto; display:flex; flex-direction:column; justify-content:center; }
+.pay-form-title { font-family:var(--display); font-size:24px; font-weight:700; color:var(--text); letter-spacing:-0.02em; margin-bottom:0.5rem; }
+.pay-form-sub { font-size:14px; color:var(--text-2); margin-bottom:2rem; }
+
+.plan-toggle { display:grid; grid-template-columns:1fr 1fr; gap:6px; background:var(--bg-2); border:1px solid var(--border); border-radius:var(--radius); padding:5px; margin-bottom:2rem; }
+.ptoggle-opt { padding:10px; text-align:center; border-radius:7px; cursor:pointer; transition:all 0.2s; border:1px solid transparent; }
+.ptoggle-opt.on { background:var(--gold-dim); border-color:rgba(245,166,35,0.3); }
+.ptoggle-name { font-size:13px; font-weight:500; color:var(--text-2); }
+.ptoggle-price { font-family:var(--mono); font-size:11px; color:var(--text-4); margin-top:2px; }
+.ptoggle-opt.on .ptoggle-name { color:var(--gold); }
+.ptoggle-opt.on .ptoggle-price { color:var(--gold); opacity:0.7; }
+
+.fsec-title { font-family:var(--mono); font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.1em; margin:1.75rem 0 1rem; }
+.fgroup { margin-bottom:1rem; }
+.frow2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.frow3 { display:grid; grid-template-columns:2fr 1fr 1fr; gap:10px; }
+
+.card-wrap { display:flex; align-items:center; gap:10px; background:var(--bg-3); border:1px solid var(--border-2); border-radius:var(--radius); padding:12px 14px; transition:border-color 0.2s,box-shadow 0.2s; }
+.card-wrap:focus-within { border-color:var(--purple-2); box-shadow:0 0 0 3px rgba(139,92,246,0.15); }
+.card-wrap input { flex:1; background:transparent; border:none; outline:none; font-family:var(--sans); font-size:15px; color:var(--text); }
+.card-wrap input::placeholder { color:var(--text-4); }
+.card-chips { display:flex; gap:4px; flex-shrink:0; }
+.chip { width:34px; height:21px; border-radius:3px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:7px; font-weight:700; border:1px solid var(--border); }
+
+.secure-note { display:flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; color:var(--text-4); margin-top:12px; }
+
+.pay-btn { width:100%; background:var(--gold); color:var(--bg); border:none; border-radius:var(--radius-lg); padding:15px; font-family:var(--display); font-size:16px; font-weight:700; cursor:pointer; margin-top:1.5rem; transition:transform 0.2s,box-shadow 0.2s; box-shadow:0 4px 24px var(--gold-glow); display:flex; align-items:center; justify-content:center; gap:10px; }
+.pay-btn:hover { transform:translateY(-2px); box-shadow:0 8px 36px var(--gold-glow); }
+.pay-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+.pay-btn-note { font-size:11px; color:var(--bg); opacity:0.7; font-family:var(--mono); font-weight:400; }
+
+/* Success */
+.pay-success { display:none; text-align:center; padding:1rem 0; }
+.pay-success.on { display:block; }
+.sring { width:80px; height:80px; border-radius:50%; background:var(--green-dim); border:2px solid var(--green); display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size:32px; box-shadow:0 0 40px rgba(16,185,129,0.2); }
+.s-title { font-family:var(--display); font-size:26px; font-weight:800; color:var(--text); letter-spacing:-0.02em; margin-bottom:0.5rem; }
+.s-sub { font-size:15px; color:var(--text-2); line-height:1.7; margin-bottom:2rem; }
+.s-steps { text-align:left; background:var(--bg-2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem; margin-bottom:2rem; }
+.s-step { display:flex; align-items:flex-start; gap:12px; margin-bottom:14px; }
+.s-step:last-child { margin-bottom:0; }
+.s-step-n { width:24px; height:24px; border-radius:50%; background:var(--gold-dim); border:1px solid rgba(245,166,35,0.3); display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; color:var(--gold); flex-shrink:0; }
+.s-step-t { font-size:14px; color:var(--text-2); line-height:1.55; }
+.s-step-t strong { color:var(--text); font-weight:500; }
+
+@media(max-width:900px){
+  .pay-wrap{grid-template-columns:1fr;}
+  .pay-left{display:none;}
+  .pay-right{padding:6rem 1.5rem 3rem;border-left:none;justify-content:flex-start;}
+  .frow2,.frow3{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="pay-wrap">
+
+  <!-- ── LEFT: Order summary ── -->
+  <div class="pay-left">
+    <div class="pay-orb"></div>
+    <div class="pay-geo" style="border-width:0 24px 42px 24px;border-color:transparent transparent var(--gold) transparent;opacity:0.1;top:12%;right:8%"></div>
+    <div class="pay-geo" style="border-width:0 16px 28px 16px;border-color:transparent transparent var(--purple-2) transparent;opacity:0.14;bottom:22%;left:6%;animation:float 7s ease-in-out infinite"></div>
+
+    <div class="pay-logo">
+      <a href="index.html" class="nav-logo" style="text-decoration:none">
+        <div class="nav-logo-icon">
+          <svg viewBox="0 0 18 18" fill="none"><path d="M3 2h8l4 4v10H3V2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M11 2v4h4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        File<span>Flow</span>
+      </a>
+    </div>
+
+    <div class="pay-summary">
+      <div class="trial-pill">🎉 &nbsp;14-day free trial — no charge today</div>
+      <div class="pay-plan-box">
+        <div class="pbox-label">You're subscribing to</div>
+        <div class="pbox-name" id="l-name">FileFlow Pro</div>
+        <div class="pbox-desc">Full-text search across unlimited files. Regex, OCR, PDF editing, and priority support — all running locally on your PC.</div>
+        <div class="pbox-price">
+          <div class="pbox-amount" id="l-amount">$9</div>
+          <div class="pbox-period" id="l-period">/ month</div>
+        </div>
+        <div class="pbox-feats">
+          <div class="pbox-feat"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Unlimited files & folders</div>
+          <div class="pbox-feat"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>30+ file formats (PDF, DOCX, XLSX…)</div>
+          <div class="pbox-feat"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Regex & Boolean search</div>
+          <div class="pbox-feat"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>OCR for scanned PDFs</div>
+          <div class="pbox-feat"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>100% offline — files never leave your PC</div>
+        </div>
+        <div class="pbox-divider"></div>
+        <div class="pbox-line"><span>14-day free trial</span><span style="color:var(--green)">$0.00</span></div>
+        <div class="pbox-line" id="l-billing"><span>Then billed monthly</span><span id="l-total">$9 / month</span></div>
+        <div class="pbox-line total"><span>Due today</span><span>$0.00</span></div>
+      </div>
+    </div>
+
+    <div class="pay-trust">
+      <div class="trust-item"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1.5" y="5.5" width="10" height="6" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M4 5.5V4a2.5 2.5 0 015 0v1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>Stripe-secured checkout</div>
+      <div class="trust-item"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1C4 1 2 3 2 5.5c0 3.5 4.5 6.5 4.5 6.5s4.5-3 4.5-6.5C11 3 9 1 6.5 1z" stroke="currentColor" stroke-width="1.1"/><path d="M4.5 5.5l1.5 1.5 2.5-2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>Cancel anytime</div>
+      <div class="trust-item"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6.5 3.5v3l2 2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>7-day refund policy</div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT: Checkout form ── -->
+  <div class="pay-right">
+
+    <div id="form-wrap">
+      <div class="pay-form-title">Complete your order</div>
+      <div class="pay-form-sub">Start your free trial now. Your card won't be charged for 14 days.</div>
+
+      <!-- Plan toggle -->
+      <div class="plan-toggle">
+        <div class="ptoggle-opt on" id="tog-mo" onclick="setPlan('mo')">
+          <div class="ptoggle-name">Monthly</div>
+          <div class="ptoggle-price">$9 / month</div>
+        </div>
+        <div class="ptoggle-opt" id="tog-yr" onclick="setPlan('yr')">
+          <div class="ptoggle-name">Annual &nbsp;<span style="font-size:10px;background:var(--green-dim);color:var(--green);padding:1px 7px;border-radius:100px">Save 30%</span></div>
+          <div class="ptoggle-price">$6 / month · $76 billed yearly</div>
+        </div>
+      </div>
+
+      <!-- Account -->
+      <div class="fsec-title">Account details</div>
+      <div class="frow2" style="margin-bottom:1rem">
+        <div class="fgroup"><label>First name</label><input class="input" type="text" placeholder="Ahmed" id="f-fname"></div>
+        <div class="fgroup"><label>Last name</label><input class="input" type="text" placeholder="Al-Rashidi"></div>
+      </div>
+      <div class="fgroup"><label>Email address</label><input class="input" type="email" placeholder="you@company.com" id="f-email"></div>
+      <div class="fgroup"><label>Password</label><input class="input" type="password" placeholder="Create a password (min. 8 chars)"></div>
+
+      <!-- Payment -->
+      <div class="fsec-title">Payment details</div>
+      <div class="fgroup">
+        <label>Card number</label>
+        <div class="card-wrap">
+          <input type="text" placeholder="1234  5678  9012  3456" maxlength="19" id="f-card" oninput="fmtCard(this)">
+          <div class="card-chips">
+            <div class="chip" style="background:#1a1f71;color:#fff">VISA</div>
+            <div class="chip" style="background:#EB001B;color:#fff">MC</div>
+            <div class="chip" style="background:#2557D6;color:#fff">AMEX</div>
+          </div>
+        </div>
+      </div>
+      <div class="frow3">
+        <div class="fgroup"><label>Name on card</label><input class="input" type="text" placeholder="Ahmed Al-Rashidi"></div>
+        <div class="fgroup"><label>Expiry</label><input class="input" type="text" placeholder="MM / YY" maxlength="7" oninput="fmtExp(this)"></div>
+        <div class="fgroup"><label>CVC</label><input class="input" type="text" placeholder="•••" maxlength="4"></div>
+      </div>
+      <div class="secure-note">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="5" width="10" height="6.5" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M3.5 5V3.5a2.5 2.5 0 015 0V5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+        Processed securely by Stripe. We never store your card details.
+      </div>
+
+      <button class="pay-btn" id="pay-btn" onclick="doCheckout()">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2C5.13 2 2 5.13 2 9s3.13 7 7 7 7-3.13 7-7-3.13-7-7-7z" stroke="currentColor" stroke-width="1.4"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div>Start free trial
+          <div class="pay-btn-note" id="btn-note">No charge for 14 days · Then $9/month</div>
+        </div>
+      </button>
+
+      <p style="font-family:var(--mono);font-size:11px;color:var(--text-4);text-align:center;margin-top:1rem;line-height:1.7">
+        By subscribing you agree to our <a href="terms.html" style="color:var(--text-3)">Terms</a> and <a href="privacy.html" style="color:var(--text-3)">Privacy Policy</a>.<br>
+        Cancel anytime from your dashboard. Refunds within 7 days of first charge.
+      </p>
+    </div>
+
+    <!-- Success -->
+    <div class="pay-success" id="pay-success">
+      <div class="sring">✓</div>
+      <div class="s-title">You're in! 🎉</div>
+      <div class="s-sub">Your FileFlow Pro trial is active. Check your email for your download link and welcome kit.</div>
+      <div class="s-steps">
+        <div class="s-step"><div class="s-step-n">1</div><div class="s-step-t"><strong>Check your email</strong> — download link sent to <span id="s-email" style="color:var(--gold)"></span></div></div>
+        <div class="s-step"><div class="s-step-n">2</div><div class="s-step-t"><strong>Install FileFlow</strong> — 12 MB installer, no admin rights needed on Windows 10/11</div></div>
+        <div class="s-step"><div class="s-step-n">3</div><div class="s-step-t"><strong>Point it at your folders</strong> — and start finding anything inside any file in seconds</div></div>
+      </div>
+      <a href="dashboard.html" class="btn-primary btn-lg" style="display:flex;width:100%;justify-content:center">Go to your dashboard →</a>
+      <div style="margin-top:1rem"><a href="index.html" style="font-family:var(--mono);font-size:12px;color:var(--text-3);text-decoration:none">← Back to homepage</a></div>
+    </div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>injectNav("");</script>
+<script>
+let plan = 'mo';
+function setPlan(p) {
+  plan = p;
+  const mo = p==='mo';
+  document.getElementById('tog-mo').classList.toggle('on', mo);
+  document.getElementById('tog-yr').classList.toggle('on', !mo);
+  document.getElementById('l-amount').textContent = mo ? '$9' : '$6';
+  document.getElementById('l-billing').innerHTML = mo
+    ? '<span>Then billed monthly</span><span id="l-total">$9/month</span>'
+    : '<span>Then billed annually</span><span id="l-total" style="color:var(--green)">$76/year</span>';
+  document.getElementById('btn-note').textContent = mo
+    ? 'No charge for 14 days · Then $9/month'
+    : 'No charge for 14 days · Then $76/year';
+}
+
+function fmtCard(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,16);
+  el.value = v.replace(/(.{4})/g,'$1  ').trim();
+}
+function fmtExp(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,4);
+  if (v.length>=2) v = v.slice(0,2)+' / '+v.slice(2);
+  el.value = v;
+}
+
+function doCheckout() {
+  const email = document.getElementById('f-email').value;
+  const card = document.getElementById('f-card').value;
+  const btn = document.getElementById('pay-btn');
+  let ok = true;
+
+  if (!email || !email.includes('@')) {
+    document.getElementById('f-email').style.outline='2px solid rgba(239,68,68,0.5)';
+    setTimeout(()=>document.getElementById('f-email').style.outline='',1500); ok=false;
+  }
+  if (!card || card.replace(/\s/g,'').length < 16) {
+    document.getElementById('f-card').closest('.card-wrap').style.borderColor='rgba(239,68,68,0.5)';
+    setTimeout(()=>document.getElementById('f-card').closest('.card-wrap').style.borderColor='',1500); ok=false;
+  }
+  if (!ok) return;
+
+  btn.disabled=true;
+  btn.innerHTML=`<svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="animation:spin 0.9s linear infinite;flex-shrink:0"><path d="M10 2a8 8 0 018 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><div>Processing…<div class="pay-btn-note">Securing your order</div></div>`;
+
+  setTimeout(()=>{
+    document.getElementById('form-wrap').style.display='none';
+    const s = document.getElementById('pay-success');
+    s.classList.add('on');
+    document.getElementById('s-email').textContent = email;
+  }, 2000);
+}
+</script>
+<style>@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style>
+</body>
+</html>
