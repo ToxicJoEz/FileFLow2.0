@@ -15,9 +15,7 @@ const app = express();
 // Security Middlewares
 app.use(helmet());
 app.use(cors({
-  origin: function (origin, callback) {
-    callback(null, true);
-  }, 
+  origin: process.env.CLIENT_URL || 'http://localhost:5173', 
   credentials: true
 }));
 
