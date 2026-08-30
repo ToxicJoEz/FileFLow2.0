@@ -6,6 +6,7 @@ import { withZodSchema } from 'formik-validator-zod';
 import { toast } from 'react-toastify';
 import { joinWaitlistForm } from '../services/form.service';
 import CustomSelect from '../components/CustomSelect';
+import Loader from '../components/Loader';
 
 const betaSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -138,8 +139,8 @@ export default function Beta() {
             </div>
           </div>
           
-          <button type="submit" disabled={isSubmitting} className="btn-primary btn-lg" style={{ width: '100%', justifyContent: 'center' }}>
-            {isSubmitting ? 'Submitting...' : 'Join the waitlist'}
+          <button type="submit" disabled={isSubmitting} className="btn-primary btn-lg btn-loader" style={{ width: '100%', justifyContent: 'center' }}>
+            {isSubmitting ? <Loader size="sm" inline /> : 'Join the waitlist'}
           </button>
         </form>
         

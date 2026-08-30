@@ -9,6 +9,7 @@ import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
 import formRoutes from './routes/form.routes.js';
 import featureRoutes from './routes/feature.routes.js';
+import blogRoutes from './routes/blog.routes.js';
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/forms', formRoutes);
 app.use('/api/features', featureRoutes);
+app.use('/api/blog', blogRoutes);
 
 // 404 handler
 app.use((req, res, next) => {

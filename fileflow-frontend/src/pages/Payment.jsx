@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { z } from 'zod';
 import { withZodSchema } from 'formik-validator-zod';
+import Loader from '../components/Loader';
 
 const paymentSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -186,7 +187,7 @@ export default function Payment() {
               Processed securely by Stripe. We never store your card details.
             </div>
 
-            <button type="submit" className="pay-btn" disabled={isProcessing}>
+            <button type="submit" className="pay-btn btn-loader" disabled={isProcessing}>
               {!isProcessing ? (
                 <>
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2C5.13 2 2 5.13 2 9s3.13 7 7 7 7-3.13 7-7-3.13-7-7-7z" stroke="currentColor" strokeWidth="1.4"/><path d="M6 9l2 2 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -195,12 +196,12 @@ export default function Payment() {
                   </div>
                 </>
               ) : (
-                <>
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ animation: 'spin 0.9s linear infinite', flexShrink: 0 }}><path d="M10 2a8 8 0 018 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
+                <div className="loader-box">
+                  <Loader size="sm" inline />
                   <div>Processing…
                     <div className="pay-btn-note">Securing your order</div>
                   </div>
-                </>
+                </div>
               )}
             </button>
 

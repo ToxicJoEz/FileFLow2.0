@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CheckCircle2, Clock, Calendar, Lightbulb, ArrowUp, Plus, X } from 'lucide-react';
 import { toast } from 'react-toastify';
 import CustomSelect from '../components/CustomSelect';
+import Loader from '../components/Loader';
 import { getFeatures, suggestFeature, addOfficialFeature, toggleVote } from '../services/feature.service';
 import { useAuthStore } from '../store/useAuthStore';
 
@@ -293,7 +294,9 @@ export default function Roadmap() {
             )}
 
             {isLoading ? (
-              <div style={{ padding: '4rem 0', textAlign: 'center', color: 'var(--text-3)' }}>Loading roadmap...</div>
+              <div style={{ padding: '6rem 0' }}>
+                <Loader size="lg" />
+              </div>
             ) : (
               <>
                 {/* SHIPPED */}
@@ -382,8 +385,8 @@ export default function Roadmap() {
                   onChange={e => setSuggestionDesc(e.target.value)}
                 ></textarea>
               </div>
-              <button type="submit" disabled={isSubmitting} className="btn-primary">
-                {isSubmitting ? 'Submitting...' : 'Submit suggestion'}
+              <button type="submit" disabled={isSubmitting} className="btn-primary btn-loader">
+                {isSubmitting ? <Loader size="sm" inline /> : 'Submit suggestion'}
               </button>
             </form>
           </div>
@@ -455,8 +458,8 @@ export default function Roadmap() {
                 </div>
               </div>
 
-              <button type="submit" className="btn-primary" disabled={isSubmitting} style={{ width: '100%', justifyContent: 'center', marginTop: '1rem' }}>
-                {isSubmitting ? 'Saving...' : (editingFeatureId ? 'Publish' : 'Add Feature')}
+              <button type="submit" className="btn-primary btn-loader" disabled={isSubmitting} style={{ width: '100%', justifyContent: 'center', marginTop: '1rem' }}>
+                {isSubmitting ? <Loader size="sm" inline /> : (editingFeatureId ? 'Publish' : 'Add Feature')}
               </button>
             </form>
           </div>

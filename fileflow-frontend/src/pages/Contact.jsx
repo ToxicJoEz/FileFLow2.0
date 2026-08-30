@@ -6,6 +6,7 @@ import { withZodSchema } from 'formik-validator-zod';
 import { toast } from 'react-toastify';
 import { submitContactForm } from '../services/form.service';
 import CustomSelect from '../components/CustomSelect';
+import Loader from '../components/Loader';
 
 const contactSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -141,8 +142,8 @@ export default function Contact() {
                   {formik.touched.message && formik.errors.message && <div style={{ color: 'var(--red)', fontSize: '12px', marginTop: '4px' }}>{formik.errors.message}</div>}
                 </div>
                 
-                <button type="submit" disabled={isSubmitting} className="btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '13px' }}>
-                  {isSubmitting ? 'Sending...' : 'Send message'}
+                <button type="submit" disabled={isSubmitting} className="btn-primary btn-loader" style={{ width: '100%', justifyContent: 'center', padding: '13px' }}>
+                  {isSubmitting ? <Loader size="sm" inline /> : 'Send message'}
                 </button>
               </form>
             ) : (

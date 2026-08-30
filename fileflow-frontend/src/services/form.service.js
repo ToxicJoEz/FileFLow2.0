@@ -5,7 +5,12 @@ export const submitContactForm = async (contactData) => {
   return response.data;
 };
 
-export const joinWaitlistForm = async (waitlistData) => {
-  const response = await api.post('/forms/waitlist', waitlistData);
+export const joinWaitlistForm = async (data) => {
+  const response = await api.post('/forms/waitlist', data);
+  return response.data;
+};
+
+export const subscribeNewsletter = async (email) => {
+  const response = await api.post('/forms/newsletter', { email });
   return response.data;
 };

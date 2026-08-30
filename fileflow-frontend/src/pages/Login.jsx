@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { withZodSchema } from 'formik-validator-zod';
 import { useAuthStore } from '../store/useAuthStore';
 import { useGoogleLogin } from '@react-oauth/google';
+import Loader from '../components/Loader';
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -170,8 +171,8 @@ export default function Login() {
               </div>
             )}
             
-            <button disabled={isLoading} type="submit" className="btn-primary btn-lg" style={{ width: '100%', justifyContent: 'center', marginTop: isRegistering ? '1rem' : '0' }}>
-              {isLoading ? 'Please wait...' : (isRegistering ? 'Create account' : 'Sign in')}
+            <button disabled={isLoading} type="submit" className="btn-primary btn-lg btn-loader" style={{ width: '100%', justifyContent: 'center', marginTop: isRegistering ? '1rem' : '0' }}>
+              {isLoading ? <Loader size="sm" inline /> : (isRegistering ? 'Create account' : 'Sign in')}
             </button>
           </form>
 
