@@ -38,7 +38,7 @@ export default function Roadmap() {
   const fetchFeatures = async () => {
     try {
       const data = await getFeatures();
-      setFeatures(data);
+      setFeatures(data || []);
     } catch (error) {
       toast.error("Failed to load roadmap.");
     } finally {
