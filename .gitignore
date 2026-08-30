@@ -3,3 +3,7 @@ node_modules
 .DS_Store
 client_secret*.json
 *.txt
+
+# Excluded folders
+fileflow-site/
+Logo concepts/

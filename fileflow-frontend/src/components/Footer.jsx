@@ -7,14 +7,7 @@ export default function Footer() {
       <div className="footer-grid">
         <div className="footer-brand">
           <Link to="/" className="nav-logo" style={{ textDecoration: 'none' }}>
-            <div className="nav-logo-icon">
-              <svg viewBox="0 0 18 18" fill="none">
-                <path d="M3 2h8l4 4v10H3V2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-                <path d="M11 2v4h4" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-                <path d="M6 9h6M6 12h4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-              </svg>
-            </div>
-            File<span>Flow</span>
+            <img src="/fileflow_horizontal_white_transparent.png" alt="FileFlow" className="nav-logo-full" />
           </Link>
           <p>Your all-in-one file management platform. Fast. Smart. Simple. Search inside every document instantly — 100% offline.</p>
           <div style={{ marginTop: '1.25rem', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>

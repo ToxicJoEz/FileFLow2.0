@@ -68,13 +68,7 @@ export default function Beta() {
       <div className="beta-card">
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', textDecoration: 'none', fontFamily: 'var(--display)', fontSize: '22px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-.02em' }}>
-            <div className="nav-logo-icon" style={{ width: '36px', height: '36px' }}>
-              <svg viewBox="0 0 18 18" fill="none">
-                <path d="M3 2h8l4 4v10H3V2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-                <path d="M11 2v4h4" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-                <path d="M6 9h6M6 12h4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-              </svg>
-            </div>
+            <img src="/fileflow_app_icon_dark_transparent.png" alt="FileFlow" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
             File<span style={{ color: 'var(--gold)' }}>Flow</span>
           </Link>
         </div>

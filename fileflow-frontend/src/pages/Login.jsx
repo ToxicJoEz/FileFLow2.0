@@ -53,15 +53,9 @@ export default function Login() {
       <div className="auth-left">
         <div className="auth-left-orb"></div>
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none', marginBottom: '3rem' }}>
-            <div className="nav-logo-icon">
-              <svg viewBox="0 0 18 18" fill="none">
-                <path d="M3 2h8l4 4v10H3V2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-                <path d="M11 2v4h4" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-                <path d="M6 9h6M6 12h4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-              </svg>
-            </div>
-            <span style={{ fontFamily: 'var(--display)', fontSize: '18px', fontWeight: 700, color: 'var(--text)' }}>
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', textDecoration: 'none', marginBottom: '3rem' }}>
+            <img src="/fileflow_app_icon_dark_transparent.png" alt="FileFlow" style={{ width: '38px', height: '38px', objectFit: 'contain' }} />
+            <span style={{ fontFamily: 'var(--display)', fontSize: '20px', fontWeight: 700, color: 'var(--text)' }}>
               File<span style={{ color: 'var(--gold)' }}>Flow</span>
             </span>
           </Link>
