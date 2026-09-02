@@ -27,7 +27,17 @@ export const protect = catchAsync(async (req, res, next) => {
       throw new Error('The user belonging to this token does no longer exist.');
     }
 
-// Grant access to protected route
+    if (currentUser.isDeleted) {
+      res.status(403);
+      throw new Error('This account has been deleted.');
+    }
+
+    if (currentUser.isBanned) {
+      res.status(403);
+      throw new Error('This account has been suspended.');
+    }
+
+    // Grant access to protected route
     req.user = currentUser;
     next();
   } catch (error) {

@@ -42,7 +42,7 @@ export const getTopics = async (req, res) => {
         .sort(sortObj)
         .skip(skip)
         .limit(parseInt(limit, 10))
-        .populate('author', 'name avatar role accentColor email location bio socialLinks handle createdAt')
+        .populate('author', 'name avatar role accentColor location bio socialLinks handle hasAvatar avatarVersion createdAt')
         .lean(),
       Topic.countDocuments(query)
     ]);
@@ -90,7 +90,7 @@ export const getTopicById = async (req, res) => {
       req.params.id,
       { $inc: { views: 1 } },
       { new: true, timestamps: false }
-    ).populate('author', 'name avatar role accentColor email location bio socialLinks handle createdAt');
+    ).populate('author', 'name avatar role accentColor location bio socialLinks handle hasAvatar avatarVersion createdAt');
     
     // Admins can see soft-deleted topics, normal users cannot.
     if (!topic || (topic.isDeleted && (!req.user || req.user.role !== 'admin'))) {
@@ -134,7 +134,7 @@ export const createTopic = async (req, res) => {
 
     await topic.save();
     
-    const populatedTopic = await Topic.findById(topic._id).populate('author', 'name avatar role accentColor email location bio socialLinks handle createdAt');
+    const populatedTopic = await Topic.findById(topic._id).populate('author', 'name avatar role accentColor location bio socialLinks handle hasAvatar avatarVersion createdAt');
     res.status(201).json(populatedTopic);
   } catch (error) {
     res.status(500).json({ message: 'Error creating topic', error: error.message });
@@ -159,7 +159,7 @@ export const updateTopic = async (req, res) => {
     if (category) topic.category = category;
 
     await topic.save();
-    const populatedTopic = await Topic.findById(topic._id).populate('author', 'name avatar role accentColor email location bio socialLinks handle createdAt');
+    const populatedTopic = await Topic.findById(topic._id).populate('author', 'name avatar role accentColor location bio socialLinks handle hasAvatar avatarVersion createdAt');
     res.json(populatedTopic);
   } catch (error) {
     res.status(500).json({ message: 'Error updating topic', error: error.message });
@@ -212,7 +212,7 @@ export const togglePinTopic = async (req, res) => {
     }
 
     await topic.save();
-    const populatedTopic = await Topic.findById(topic._id).populate('author', 'name avatar role accentColor email location bio socialLinks handle createdAt');
+    const populatedTopic = await Topic.findById(topic._id).populate('author', 'name avatar role accentColor location bio socialLinks handle hasAvatar avatarVersion createdAt');
     res.json(populatedTopic);
   } catch (error) {
     res.status(500).json({ message: 'Error toggling pin state', error: error.message });
@@ -243,7 +243,7 @@ export const voteTopic = async (req, res) => {
 export const getReplies = async (req, res) => {
   try {
     const replies = await Reply.find({ topic: req.params.id, isDeleted: false })
-      .populate('author', 'name avatar role accentColor email location bio socialLinks handle createdAt')
+      .populate('author', 'name avatar role accentColor location bio socialLinks handle hasAvatar avatarVersion createdAt')
       .sort({ createdAt: 1 });
       
     res.json(replies);
@@ -271,7 +271,7 @@ export const createReply = async (req, res) => {
     });
 
     await reply.save();
-    const populatedReply = await Reply.findById(reply._id).populate('author', 'name avatar role accentColor email location bio socialLinks handle createdAt');
+    const populatedReply = await Reply.findById(reply._id).populate('author', 'name avatar role accentColor location bio socialLinks handle hasAvatar avatarVersion createdAt');
     res.status(201).json(populatedReply);
   } catch (error) {
     res.status(500).json({ message: 'Error creating reply', error: error.message });
@@ -294,7 +294,7 @@ export const updateReply = async (req, res) => {
     if (content) reply.content = content;
     await reply.save();
     
-    const populatedReply = await Reply.findById(reply._id).populate('author', 'name avatar role accentColor email location bio socialLinks handle createdAt');
+    const populatedReply = await Reply.findById(reply._id).populate('author', 'name avatar role accentColor location bio socialLinks handle hasAvatar avatarVersion createdAt');
     res.json(populatedReply);
   } catch (error) {
     res.status(500).json({ message: 'Error updating reply', error: error.message });
@@ -346,3 +346,101 @@ export const voteReply = async (req, res) => {
     res.status(500).json({ message: 'Error voting on reply', error: error.message });
   }
 };
+
+export const restoreTopic = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Not authorized to restore this topic' });
+    }
+
+    const topic = await Topic.findById(req.params.id);
+    if (!topic) {
+      return res.status(404).json({ message: 'Topic not found' });
+    }
+
+    topic.isDeleted = false;
+    topic.deletedAt = undefined;
+    topic.deletedBy = undefined;
+    await topic.save();
+
+    res.json({ message: 'Topic restored successfully', topic });
+  } catch (error) {
+    res.status(500).json({ message: 'Error restoring topic', error: error.message });
+  }
+};
+
+export const restoreReply = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Not authorized to restore this reply' });
+    }
+
+    const reply = await Reply.findById(req.params.replyId);
+    if (!reply) {
+      return res.status(404).json({ message: 'Reply not found' });
+    }
+
+    reply.isDeleted = false;
+    reply.deletedAt = undefined;
+    reply.deletedBy = undefined;
+    await reply.save();
+
+    await Topic.findByIdAndUpdate(reply.topic, { $inc: { replyCount: 1 } });
+
+    res.json({ message: 'Reply restored successfully', reply });
+  } catch (error) {
+    res.status(500).json({ message: 'Error restoring reply', error: error.message });
+  }
+};
+
+export const getAdminUserTopics = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+
+    const topics = await Topic.find({ author: req.params.userId })
+      .sort({ createdAt: -1 })
+      .populate('author', 'name avatar role accentColor location bio socialLinks handle hasAvatar avatarVersion createdAt');
+      
+    // Count replies for each topic
+    const topicIds = topics.map(t => t._id);
+    const replyCounts = await Reply.aggregate([
+      { $match: { topic: { $in: topicIds }, isDeleted: false } },
+      { $group: { _id: '$topic', count: { $sum: 1 } } }
+    ]);
+
+    const countMap = {};
+    replyCounts.forEach(rc => {
+      countMap[rc._id.toString()] = rc.count;
+    });
+
+    const topicsWithCount = topics.map(t => ({
+      ...t.toObject(),
+      replyCount: countMap[t._id.toString()] || 0,
+      upvoteCount: (t.upvotes || []).length
+    }));
+
+    res.json(topicsWithCount);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user topics', error: error.message });
+  }
+};
+
+export const getAdminUserReplies = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+
+    const replies = await Reply.find({ author: req.params.userId })
+      .sort({ createdAt: -1 })
+      .populate('topic', 'title')
+      .populate('author', 'name avatar role accentColor location bio socialLinks handle hasAvatar avatarVersion createdAt');
+
+    res.json(replies);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user replies', error: error.message });
+  }
+};
+

@@ -21,4 +21,10 @@ router.put('/replies/:replyId', protect, communityController.updateReply);
 router.delete('/replies/:replyId', protect, communityController.deleteReply);
 router.post('/replies/:replyId/vote', protect, communityController.voteReply);
 
+router.post('/topics/:id/restore', protect, communityController.restoreTopic);
+router.post('/replies/:replyId/restore', protect, communityController.restoreReply);
+
+router.get('/admin/users/:userId/topics', protect, communityController.getAdminUserTopics);
+router.get('/admin/users/:userId/replies', protect, communityController.getAdminUserReplies);
+
 export default router;

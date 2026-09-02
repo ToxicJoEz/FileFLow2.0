@@ -19,6 +19,7 @@ const contactSchema = z.object({
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
 
   const formik = useFormik({
     initialValues: {
@@ -31,11 +32,12 @@ export default function Contact() {
     validate: withZodSchema(contactSchema),
     onSubmit: async (values) => {
       setIsSubmitting(true);
+      setFormError('');
       try {
         await submitContactForm(values);
         setSubmitted(true);
       } catch (error) {
-        toast.error(error.response?.data?.message || "Failed to send message");
+        setFormError(error.response?.data?.message || "Failed to send message");
       } finally {
         setIsSubmitting(false);
       }
@@ -141,6 +143,12 @@ export default function Contact() {
                   <textarea name="message" className="input" rows={5} placeholder="Tell us what's on your mind..." style={{ resize: 'vertical' }} value={formik.values.message} onChange={formik.handleChange} onBlur={formik.handleBlur}></textarea>
                   {formik.touched.message && formik.errors.message && <div style={{ color: 'var(--red)', fontSize: '12px', marginTop: '4px' }}>{formik.errors.message}</div>}
                 </div>
+
+                {formError && (
+                  <div style={{ padding: '10px 14px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px', color: 'var(--red)', fontSize: '13px', marginBottom: '1rem' }}>
+                    {formError}
+                  </div>
+                )}
                 
                 <button type="submit" disabled={isSubmitting} className="btn-primary btn-loader" style={{ width: '100%', justifyContent: 'center', padding: '13px' }}>
                   {isSubmitting ? <Loader size="sm" inline /> : 'Send message'}

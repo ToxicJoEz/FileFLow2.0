@@ -234,7 +234,28 @@ export default function Community() {
                               </div>
                               <div className="thread-meta">
                                 <span className={`tag tag-${topic.category}`}>{categoryConfig[topic.category]?.name || topic.category}</span>
-                                <span className="thread-author">by {topic.author?.name}</span>
+                                <div className="flex items-center gap-1.5 thread-author">
+                                  <div 
+                                    style={{
+                                      width: '18px',
+                                      height: '18px',
+                                      borderRadius: '50%',
+                                      background: topic.author?.hasAvatar 
+                                        ? `url(http://localhost:5000/api/users/${topic.author._id}/avatar?v=${topic.author.avatarVersion || 0}) center/cover no-repeat` 
+                                        : (topic.author?.accentColor || 'var(--purple)'),
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      fontSize: '9px',
+                                      fontWeight: 'bold',
+                                      color: '#fff',
+                                      flexShrink: 0
+                                    }}
+                                  >
+                                    {!topic.author?.hasAvatar && (topic.author?.name ? topic.author.name.substring(0, 1).toUpperCase() : 'U')}
+                                  </div>
+                                  <span>by {topic.author?.name}</span>
+                                </div>
                                 <span className="thread-replies">💬 {topic.replyCount || 0} replies</span>
                                 <span className="thread-time">{new Date(topic.createdAt).toLocaleDateString()}</span>
                               </div>

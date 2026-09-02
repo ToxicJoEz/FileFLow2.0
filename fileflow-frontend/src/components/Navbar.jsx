@@ -78,7 +78,7 @@ export default function Navbar() {
                   width: '26px', 
                   height: '26px', 
                   borderRadius: '50%', 
-                  background: user?.accentColor || 'var(--purple)', 
+                  background: user?.hasAvatar ? `url(http://localhost:5000/api/users/${user._id}/avatar?v=${user.avatarVersion || 0}) center/cover no-repeat` : (user?.accentColor || 'var(--purple)'), 
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center', 
@@ -86,7 +86,7 @@ export default function Navbar() {
                   fontWeight: 'bold', 
                   color: user?.accentColor ? '#fff' : 'var(--bg)' 
                 }}>
-                  {getInitials(user?.name)}
+                  {!user?.hasAvatar && getInitials(user?.name)}
                 </div>
                 Dashboard
               </Link>

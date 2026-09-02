@@ -38,7 +38,7 @@ const ReplySchema = new mongoose.Schema(
 );
 
 ReplySchema.virtual('upvoteCount').get(function () {
-  return this.upvotes.length;
+  return this.upvotes ? this.upvotes.length : 0;
 });
 
 ReplySchema.set('toJSON', { virtuals: true });

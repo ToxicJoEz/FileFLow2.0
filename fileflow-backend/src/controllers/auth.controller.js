@@ -35,7 +35,22 @@ const ACCENT_COLORS = [
   '#6366f1', // Indigo
 ];
 
-const getRandomAccentColor = () => ACCENT_COLORS[Math.floor(Math.random() * ACCENT_COLORS.length)];
+const generateUniqueHandle = async (baseName) => {
+  let cleanBase = (baseName || 'user').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 10);
+  if (!cleanBase) cleanBase = 'user';
+
+  let handle = `${cleanBase}${Math.floor(1000 + Math.random() * 9000)}`;
+  let exists = await User.findOne({ handle });
+  let attempts = 0;
+
+  while (exists && attempts < 10) {
+    handle = `${cleanBase}${Math.floor(1000 + Math.random() * 9000)}`;
+    exists = await User.findOne({ handle });
+    attempts++;
+  }
+
+  return handle;
+};
 
 // @desc      Register user
 // @route     POST /api/auth/register
@@ -50,11 +65,14 @@ export const register = catchAsync(async (req, res, next) => {
     throw new Error('User already exists with that email');
   }
 
+  const handle = await generateUniqueHandle(name);
+
   // Create user
   const user = await User.create({
     name,
     email,
     password,
+    handle,
     accentColor: getRandomAccentColor()
   });
 
@@ -81,6 +99,24 @@ export const login = catchAsync(async (req, res, next) => {
   if (!isMatch) {
     res.status(401);
     throw new Error('Invalid credentials');
+  }
+
+  // Check if account is soft-deleted
+  if (user.isDeleted) {
+    res.status(403);
+    throw new Error('This account has been deleted. Please contact support if you believe this is a mistake.');
+  }
+
+  // Check if account is banned
+  if (user.isBanned) {
+    res.status(403);
+    throw new Error(user.banReason ? `This account has been banned: ${user.banReason}` : 'This account has been suspended by an administrator.');
+  }
+
+  // If existing user has no handle, give them one automatically
+  if (!user.handle) {
+    user.handle = await generateUniqueHandle(user.name);
+    await user.save();
   }
 
   sendTokenResponse(user, 200, res);
@@ -116,12 +152,29 @@ export const googleLogin = async (req, res, next) => {
     // If they don't exist, create an account automatically
     if (!user) {
       const randomPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+      const handle = await generateUniqueHandle(name);
       user = await User.create({
         name,
         email,
+        handle,
         password: randomPassword, // Generate a secure random password since they use Google
         accentColor: getRandomAccentColor()
       });
+    } else if (!user.handle) {
+      user.handle = await generateUniqueHandle(user.name);
+      await user.save();
+    }
+
+    // Check if account is soft-deleted
+    if (user.isDeleted) {
+      res.status(403);
+      throw new Error('This account has been deleted. Please contact support if you believe this is a mistake.');
+    }
+
+    // Check if account is banned
+    if (user.isBanned) {
+      res.status(403);
+      throw new Error(user.banReason ? `This account has been banned: ${user.banReason}` : 'This account has been suspended by an administrator.');
     }
 
     // Issue standard JWT response

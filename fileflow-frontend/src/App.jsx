@@ -28,6 +28,7 @@ import Profile from './pages/Profile';
 import Roadmap from './pages/Roadmap';
 import Screenshots from './pages/Screenshots';
 import Settings from './pages/Settings';
+import AdminUsers from './pages/AdminUsers';
 import Terms from './pages/Terms';
 
 function App() {
@@ -101,6 +102,7 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="achievements" element={<Achievements />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="users" element={<AdminUsers />} />
           </Route>
           
           <Route path="payment" element={<Payment />} />
@@ -113,7 +115,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
-      <ToastContainer theme="dark" position="bottom-right" />
+      <ToastContainer theme="dark" position="top-center" hideProgressBar={true} autoClose={3500} closeButton={false} />
     </BrowserRouter>
   );
 }

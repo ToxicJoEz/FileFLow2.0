@@ -252,13 +252,13 @@ export default function TopicDetail() {
                     className="reply-av" 
                     style={{ 
                       cursor: 'pointer', 
-                      background: topic.author?.accentColor || 'var(--gold-dim)', 
+                      background: topic.author?.hasAvatar ? `url(http://localhost:5000/api/users/${topic.author._id}/avatar?v=${topic.author.avatarVersion || 0}) center/cover no-repeat` : (topic.author?.accentColor || 'var(--gold-dim)'), 
                       color: topic.author?.accentColor ? '#fff' : 'var(--gold)',
                       border: `2px solid ${topic.author?.accentColor || 'transparent'}`
                     }}
                     onClick={() => setSelectedUser(topic.author)}
                   >
-                    {topic.author?.name ? topic.author.name.substring(0, 2).toUpperCase() : '??'}
+                    {!topic.author?.hasAvatar && (topic.author?.name ? topic.author.name.substring(0, 2).toUpperCase() : '??')}
                   </div>
                   <div>
                     <div 
@@ -309,13 +309,13 @@ export default function TopicDetail() {
                           className="reply-av" 
                           style={{ 
                             cursor: 'pointer', 
-                            background: reply.author?.accentColor || 'var(--bg-3)', 
+                            background: reply.author?.hasAvatar ? `url(http://localhost:5000/api/users/${reply.author._id}/avatar?v=${reply.author.avatarVersion || 0}) center/cover no-repeat` : (reply.author?.accentColor || 'var(--bg-3)'), 
                             color: reply.author?.accentColor ? '#fff' : 'var(--text-3)',
                             border: `2px solid ${reply.author?.accentColor || 'transparent'}`
                           }}
                           onClick={() => setSelectedUser(reply.author)}
                         >
-                          {reply.author?.name ? reply.author.name.substring(0, 2).toUpperCase() : '??'}
+                          {!reply.author?.hasAvatar && (reply.author?.name ? reply.author.name.substring(0, 2).toUpperCase() : '??')}
                         </div>
                         <div>
                           <div 
@@ -419,13 +419,13 @@ export default function TopicDetail() {
                   className="author-widget-av"
                   style={{ 
                     cursor: 'pointer', 
-                    background: topic.author?.accentColor || 'var(--purple)', 
+                    background: topic.author?.hasAvatar ? `url(http://localhost:5000/api/users/${topic.author._id}/avatar?v=${topic.author.avatarVersion || 0}) center/cover no-repeat` : (topic.author?.accentColor || 'var(--purple)'), 
                     color: '#fff',
                     border: `2px solid ${topic.author?.accentColor || 'transparent'}`
                   }}
                   onClick={() => setSelectedUser(topic.author)}
                 >
-                  {topic.author?.name ? topic.author.name.substring(0, 2).toUpperCase() : '??'}
+                  {!topic.author?.hasAvatar && (topic.author?.name ? topic.author.name.substring(0, 2).toUpperCase() : '??')}
                 </div>
                 <div>
                   <div 

@@ -65,20 +65,25 @@ export default function BlogEditorModal({ post, onClose, onSuccess }) {
     }));
   };
 
+  const [formError, setFormError] = useState('');
+  const [formSuccess, setFormSuccess] = useState('');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setFormError('');
+    setFormSuccess('');
     try {
       if (post) {
         await updatePost(post._id, formData);
-        toast.success("Post updated!");
+        setFormSuccess("Post updated!");
       } else {
         await createPost(formData);
-        toast.success("Post created!");
+        setFormSuccess("Post created!");
       }
-      handleSuccess();
+      setTimeout(handleSuccess, 500);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to save post");
+      setFormError(error.response?.data?.message || "Failed to save post");
     } finally {
       setIsSubmitting(false);
     }
@@ -156,6 +161,17 @@ export default function BlogEditorModal({ post, onClose, onSuccess }) {
             <label className="form-label">Content (Markdown supported)</label>
             <textarea className="input markdown-textarea" name="content" value={formData.content} onChange={handleChange} rows={12} required />
           </div>
+
+          {formError && (
+            <div style={{ padding: '10px 14px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px', color: 'var(--red)', fontSize: '13px' }}>
+              {formError}
+            </div>
+          )}
+          {formSuccess && (
+            <div style={{ padding: '10px 14px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '6px', color: 'var(--green)', fontSize: '13px' }}>
+              {formSuccess}
+            </div>
+          )}
 
           <div className="flex justify-end gap-2 modal-actions">
             <button type="button" className="btn-outline" onClick={handleClose}>Cancel</button>

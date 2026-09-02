@@ -28,10 +28,13 @@ export default function NewThreadModal({ onClose, onSuccess }) {
     }, 280);
   };
 
+  const [formError, setFormError] = useState('');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormError('');
     if (!title.trim() || !content.trim()) {
-      toast.error('Title and content are required');
+      setFormError('Title and content are required');
       return;
     }
 
@@ -44,7 +47,7 @@ export default function NewThreadModal({ onClose, onSuccess }) {
       });
       onSuccess(topic);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create thread');
+      setFormError(err.response?.data?.message || 'Failed to create thread');
       setLoading(false);
     }
   };
@@ -99,6 +102,12 @@ export default function NewThreadModal({ onClose, onSuccess }) {
               required
             />
           </div>
+
+          {formError && (
+            <div style={{ padding: '10px 14px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px', color: 'var(--red)', fontSize: '13px' }}>
+              {formError}
+            </div>
+          )}
           
           <div className="flex justify-end gap-3">
             <button type="button" className="btn-ghost" onClick={handleClose}>Cancel</button>

@@ -19,6 +19,7 @@ const betaSchema = z.object({
 export default function Beta() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [formError, setFormError] = useState('');
 
   const formik = useFormik({
     initialValues: {
@@ -31,6 +32,7 @@ export default function Beta() {
     validate: withZodSchema(betaSchema),
     onSubmit: async (values) => {
       setIsSubmitting(true);
+      setFormError('');
       try {
         await joinWaitlistForm({
           firstName: values.firstName,
@@ -39,9 +41,8 @@ export default function Beta() {
           useCase: values.useCase
         });
         setIsSuccess(true);
-        toast.success("Successfully joined the waitlist!");
       } catch (error) {
-        toast.error(error.response?.data?.message || "Failed to join waitlist");
+        setFormError(error.response?.data?.message || "Failed to join waitlist");
       } finally {
         setIsSubmitting(false);
       }
@@ -132,6 +133,12 @@ export default function Beta() {
               {formik.touched.terms && formik.errors.terms && <div style={{ color: 'var(--red)', fontSize: '12px', marginTop: '4px' }}>{formik.errors.terms}</div>}
             </div>
           </div>
+
+          {formError && (
+            <div style={{ padding: '10px 14px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px', color: 'var(--red)', fontSize: '13px', marginBottom: '1rem' }}>
+              {formError}
+            </div>
+          )}
           
           <button type="submit" disabled={isSubmitting} className="btn-primary btn-lg btn-loader" style={{ width: '100%', justifyContent: 'center' }}>
             {isSubmitting ? <Loader size="sm" inline /> : 'Join the waitlist'}

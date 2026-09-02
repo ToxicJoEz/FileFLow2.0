@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, User, Award, CreditCard, Settings, MessageSquare, LogOut } from 'lucide-react';
+import { LayoutDashboard, User, Award, CreditCard, Settings, MessageSquare, LogOut, Users, Shield } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import UserCardModal from './UserCardModal';
 
@@ -28,11 +28,11 @@ export default function Sidebar() {
           <div 
             className="sidebar-av"
             style={{
-              background: user?.accentColor || 'var(--purple)',
+              background: user?.hasAvatar ? `url(http://localhost:5000/api/users/${user._id}/avatar?v=${user.avatarVersion || 0}) center/cover no-repeat` : (user?.accentColor || 'var(--purple)'),
               color: user?.accentColor ? '#fff' : 'var(--bg)'
             }}
           >
-            {getInitials(user?.name)}
+            {!user?.hasAvatar && getInitials(user?.name)}
           </div>
           <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }}>{user?.name || 'User'}</div>
           <div style={{ marginTop: '4px' }}>
@@ -55,6 +55,19 @@ export default function Sidebar() {
           <Award size={16} />
           Achievements
         </NavLink>
+
+        {/* Admin Navigation */}
+        {user?.role === 'admin' && (
+          <>
+            <div className="snav-label" style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--gold)' }}>
+              <Shield size={11} /> Admin
+            </div>
+            <NavLink to="/dashboard/users" className={({ isActive }) => `snav-item ${isActive ? 'active' : ''}`}>
+              <Users size={16} />
+              Users
+            </NavLink>
+          </>
+        )}
         
         <div className="snav-label">Account</div>
         <NavLink to="/pricing" className={({ isActive }) => `snav-item ${isActive ? 'active' : ''}`}>

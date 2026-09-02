@@ -4,9 +4,12 @@ echo Starting FileFlow Development Environment
 echo =========================================
 
 echo.
-echo [1/2] Starting Backend (Node.js/Express)...
+echo [1/2] Cleaning up old processes and starting Backend...
+:: Kills any ghost node processes that might be hanging on the port from a previous bad crash
+FOR /F "tokens=5" %%a IN ('netstat -aon ^| findstr :5000') DO taskkill /F /PID %%a >nul 2>&1
+
 cd fileflow-backend
-start /B cmd /c "npm run dev"
+start /B cmd /c "npx nodemon --watch src src/server.js"
 cd ..
 
 echo.

@@ -38,10 +38,15 @@ export default function EditPostModal({ isOpen, onClose, post, isReply, onSucces
     }, 280);
   };
 
+  const [formError, setFormError] = useState('');
+  const [formSuccess, setFormSuccess] = useState('');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!content.trim()) return toast.error('Content cannot be empty');
-    if (!isReply && !title.trim()) return toast.error('Title cannot be empty');
+    setFormError('');
+    setFormSuccess('');
+    if (!content.trim()) return setFormError('Content cannot be empty');
+    if (!isReply && !title.trim()) return setFormError('Title cannot be empty');
 
     setLoading(true);
     try {
@@ -52,10 +57,10 @@ export default function EditPostModal({ isOpen, onClose, post, isReply, onSucces
         const updated = await communityService.updateTopic(post._id, { title, content });
         onSuccess(updated);
       }
-      toast.success('Post updated');
-      handleClose();
+      setFormSuccess('Post updated');
+      setTimeout(handleClose, 500); // give time to read success before closing
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update post');
+      setFormError(err.response?.data?.message || 'Failed to update post');
     } finally {
       setLoading(false);
     }
@@ -93,6 +98,17 @@ export default function EditPostModal({ isOpen, onClose, post, isReply, onSucces
               required
             />
           </div>
+
+          {formError && (
+            <div style={{ padding: '10px 14px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px', color: 'var(--red)', fontSize: '13px' }}>
+              {formError}
+            </div>
+          )}
+          {formSuccess && (
+            <div style={{ padding: '10px 14px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '6px', color: 'var(--green)', fontSize: '13px' }}>
+              {formSuccess}
+            </div>
+          )}
           
           <div className="flex justify-end gap-3">
             <button type="button" className="btn-ghost" onClick={handleClose}>Cancel</button>

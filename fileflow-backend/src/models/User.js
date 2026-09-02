@@ -26,6 +26,9 @@ const userSchema = new mongoose.Schema({
     unique: true,
     sparse: true
   },
+  handleLastChanged: {
+    type: Date
+  },
   bio: {
     type: String,
     default: ''
@@ -38,11 +41,21 @@ const userSchema = new mongoose.Schema({
     facebook: { type: String, default: '' },
     instagram: { type: String, default: '' },
     linkedin: { type: String, default: '' },
-    x: { type: String, default: '' }
+    x: { type: String, default: '' },
+    reddit: { type: String, default: '' },
+    discord: { type: String, default: '' }
   },
-  avatar: {
+  avatarData: {
     type: String,
-    default: ''
+    select: false // Crucial: hide base64 payload from normal queries
+  },
+  hasAvatar: {
+    type: Boolean,
+    default: false
+  },
+  avatarVersion: {
+    type: Number,
+    default: 0
   },
   accentColor: {
     type: String,
@@ -52,6 +65,24 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['user', 'admin'],
     default: 'user'
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
+  },
+  deletedAt: {
+    type: Date
+  },
+  isBanned: {
+    type: Boolean,
+    default: false
+  },
+  bannedAt: {
+    type: Date
+  },
+  banReason: {
+    type: String,
+    default: ''
   }
 }, {
   timestamps: true

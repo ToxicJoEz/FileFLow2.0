@@ -24,13 +24,17 @@ export default function Login() {
   const [isRegistering, setIsRegistering] = useState(false);
   const { loginUser, registerUser, loginWithGoogle, isLoading } = useAuthStore();
 
+  const [formError, setFormError] = useState('');
+
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      const success = await loginWithGoogle(tokenResponse.access_token);
-      if (success) navigate('/dashboard');
+      setFormError('');
+      const res = await loginWithGoogle(tokenResponse.access_token);
+      if (res.success) navigate('/dashboard');
+      else setFormError(res.message);
     },
     onError: () => {
-      console.error('Google Login Failed');
+      setFormError('Google Login Failed');
     }
   });
 
@@ -38,12 +42,15 @@ export default function Login() {
     initialValues: { name: '', email: '', password: '' },
     validate: withZodSchema(isRegistering ? registerSchema : loginSchema),
     onSubmit: async (values) => {
+      setFormError('');
       if (isRegistering) {
-        const success = await registerUser({ name: values.name, email: values.email, password: values.password });
-        if (success) navigate('/dashboard');
+        const res = await registerUser({ name: values.name, email: values.email, password: values.password });
+        if (res.success) navigate('/dashboard');
+        else setFormError(res.message);
       } else {
-        const success = await loginUser({ email: values.email, password: values.password });
-        if (success) navigate('/dashboard');
+        const res = await loginUser({ email: values.email, password: values.password });
+        if (res.success) navigate('/dashboard');
+        else setFormError(res.message);
       }
     },
   });
@@ -162,6 +169,12 @@ export default function Login() {
             {!isRegistering && (
               <div style={{ textAlign: 'right', marginBottom: '1rem' }}>
                 <Link to="#" style={{ fontSize: '12px', color: 'var(--gold)', textDecoration: 'none' }}>Forgot password?</Link>
+              </div>
+            )}
+
+            {formError && (
+              <div style={{ padding: '10px 14px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px', color: 'var(--red)', fontSize: '13px', marginBottom: '1rem' }}>
+                {formError}
               </div>
             )}
             

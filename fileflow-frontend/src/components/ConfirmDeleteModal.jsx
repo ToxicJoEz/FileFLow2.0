@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AlertTriangle, X } from 'lucide-react';
 
-export default function ConfirmDeleteModal({ onConfirm, onCancel }) {
+export default function ConfirmDeleteModal({ onConfirm, onCancel, title = "Delete this post?", description = "This action cannot be undone. Are you completely sure?" }) {
   const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
@@ -30,8 +30,8 @@ export default function ConfirmDeleteModal({ onConfirm, onCancel }) {
         <div className="delete-icon flex items-center justify-center">
           <AlertTriangle size={24} />
         </div>
-        <h3 className="delete-title">Delete this post?</h3>
-        <p className="delete-desc">This action cannot be undone. Are you completely sure?</p>
+        <h3 className="delete-title">{title}</h3>
+        <p className="delete-desc">{description}</p>
         
         <div className="flex w-full delete-actions">
           <button className="btn-outline flex-1" onClick={handleClose}>Cancel</button>

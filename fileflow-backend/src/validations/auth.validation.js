@@ -28,6 +28,8 @@ export const updateProfileSchema = z.object({
       instagram: z.string().optional(),
       linkedin: z.string().optional(),
       x: z.string().optional(),
+      reddit: z.string().optional(),
+      discord: z.string().optional(),
     }).optional()
   })
 });

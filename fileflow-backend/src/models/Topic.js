@@ -63,7 +63,7 @@ const TopicSchema = new mongoose.Schema(
 );
 
 TopicSchema.virtual('upvoteCount').get(function () {
-  return this.upvotes.length;
+  return this.upvotes ? this.upvotes.length : 0;
 });
 
 TopicSchema.set('toJSON', { virtuals: true });

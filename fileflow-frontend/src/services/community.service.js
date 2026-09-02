@@ -64,3 +64,23 @@ export const togglePinTopic = async (topicId) => {
   const response = await api.post(`/community/topics/${topicId}/pin`);
   return response.data;
 };
+
+export const restoreTopic = async (id) => {
+  const response = await api.post(`/community/topics/${id}/restore`);
+  return response.data;
+};
+
+export const restoreReply = async (replyId) => {
+  const response = await api.post(`/community/replies/${replyId}/restore`);
+  return response.data;
+};
+
+export const getAdminUserTopics = async (userId) => {
+  const response = await api.get(`/community/admin/users/${userId}/topics`);
+  return response.data;
+};
+
+export const getAdminUserReplies = async (userId) => {
+  const response = await api.get(`/community/admin/users/${userId}/replies`);
+  return response.data;
+};

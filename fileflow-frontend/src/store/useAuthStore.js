@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { login, register, logout, googleLogin } from '../services/auth.service';
-import { getMe, updateMe, updateEmail as updateEmailApi, updatePassword as updatePasswordApi } from '../services/user.service';
+import { getMe, updateMe, updateEmail as updateEmailApi, updatePassword as updatePasswordApi, uploadAvatar as uploadAvatarApi, deleteAvatar as deleteAvatarApi, deleteAccount as deleteAccountApi } from '../services/user.service';
 import { toast } from 'react-toastify';
 
 export const useAuthStore = create((set, get) => ({
@@ -29,12 +29,10 @@ export const useAuthStore = create((set, get) => ({
       const { user, token } = await login(credentials);
       localStorage.setItem('token', token);
       set({ user, isAuthenticated: true, isLoading: false });
-      toast.success('Successfully logged in');
-      return true;
+      return { success: true };
     } catch (error) {
       set({ isLoading: false });
-      toast.error(error.response?.data?.message || 'Login failed');
-      return false;
+      return { success: false, message: error.response?.data?.message || 'Login failed' };
     }
   },
 
@@ -44,12 +42,10 @@ export const useAuthStore = create((set, get) => ({
       const { user, token } = await register(userData);
       localStorage.setItem('token', token);
       set({ user, isAuthenticated: true, isLoading: false });
-      toast.success('Account created successfully');
-      return true;
+      return { success: true };
     } catch (error) {
       set({ isLoading: false });
-      toast.error(error.response?.data?.message || 'Registration failed');
-      return false;
+      return { success: false, message: error.response?.data?.message || 'Registration failed' };
     }
   },
 
@@ -58,12 +54,10 @@ export const useAuthStore = create((set, get) => ({
     try {
       const { data } = await updateMe(userData);
       set({ user: data, isLoading: false });
-      toast.success('Profile updated successfully');
-      return true;
+      return { success: true };
     } catch (error) {
       set({ isLoading: false });
-      toast.error(error.response?.data?.message || 'Failed to update profile');
-      return false;
+      return { success: false, message: error.response?.data?.message || 'Failed to update profile' };
     }
   },
 
@@ -72,12 +66,10 @@ export const useAuthStore = create((set, get) => ({
     try {
       const { data: updatedUser } = await updateEmailApi(data);
       set({ user: updatedUser, isLoading: false });
-      toast.success('Email updated successfully');
-      return true;
+      return { success: true };
     } catch (error) {
       set({ isLoading: false });
-      toast.error(error.response?.data?.message || 'Failed to update email');
-      return false;
+      return { success: false, message: error.response?.data?.message || 'Failed to update email' };
     }
   },
 
@@ -86,12 +78,34 @@ export const useAuthStore = create((set, get) => ({
     try {
       await updatePasswordApi(data);
       set({ isLoading: false });
-      toast.success('Password updated successfully');
-      return true;
+      return { success: true };
     } catch (error) {
       set({ isLoading: false });
-      toast.error(error.response?.data?.message || 'Failed to update password');
-      return false;
+      return { success: false, message: error.response?.data?.message || 'Failed to update password' };
+    }
+  },
+
+  uploadAvatar: async (avatarData) => {
+    set({ isLoading: true });
+    try {
+      const { data } = await uploadAvatarApi(avatarData);
+      set({ user: data, isLoading: false });
+      return { success: true };
+    } catch (error) {
+      set({ isLoading: false });
+      return { success: false, message: error.response?.data?.message || 'Failed to upload avatar' };
+    }
+  },
+
+  deleteAvatar: async () => {
+    set({ isLoading: true });
+    try {
+      const { data } = await deleteAvatarApi();
+      set({ user: data, isLoading: false });
+      return { success: true };
+    } catch (error) {
+      set({ isLoading: false });
+      return { success: false, message: error.response?.data?.message || 'Failed to remove avatar' };
     }
   },
 
@@ -101,12 +115,23 @@ export const useAuthStore = create((set, get) => ({
       const { user, token } = await googleLogin(accessToken);
       localStorage.setItem('token', token);
       set({ user, isAuthenticated: true, isLoading: false });
-      toast.success('Successfully logged in with Google');
-      return true;
+      return { success: true };
     } catch (error) {
       set({ isLoading: false });
-      toast.error(error.response?.data?.message || 'Google login failed');
-      return false;
+      return { success: false, message: error.response?.data?.message || 'Google login failed' };
+    }
+  },
+
+  deleteAccount: async () => {
+    set({ isLoading: true });
+    try {
+      await deleteAccountApi();
+      localStorage.removeItem('token');
+      set({ user: null, isAuthenticated: false, isLoading: false });
+      return { success: true };
+    } catch (error) {
+      set({ isLoading: false });
+      return { success: false, message: 'Failed to delete account' };
     }
   },
 
@@ -115,11 +140,9 @@ export const useAuthStore = create((set, get) => ({
       await logout();
       localStorage.removeItem('token');
       set({ user: null, isAuthenticated: false });
-      toast.success('Logged out');
     } catch (error) {
       localStorage.removeItem('token');
       set({ user: null, isAuthenticated: false });
-      toast.error('Logout failed locally');
     }
   }
 }));
