@@ -50,14 +50,47 @@ export default function Navbar() {
               <div style={{ width: '80px', height: '36px', borderRadius: '8px', background: 'var(--bg-3)', animation: 'pulse 2s infinite' }}></div>
               <div style={{ width: '60px', height: '36px', borderRadius: '8px', background: 'var(--bg-3)', animation: 'pulse 2s infinite' }}></div>
             </div>
-          ) : isAuthenticated ? (
-            <Link to="/dashboard" className="btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px' }}>
-              <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--purple), var(--gold))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold', color: 'var(--bg)' }}>
-                {getInitials(user?.name)}
-              </div>
-              Dashboard
-            </Link>
-          ) : (
+            ) : isAuthenticated ? (
+              <Link 
+                to="/dashboard" 
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '8px', 
+                  padding: '4px 14px 4px 4px', 
+                  background: user?.accentColor ? `${user.accentColor}15` : 'var(--bg-3)',
+                  border: `1px solid ${user?.accentColor ? `${user.accentColor}40` : 'var(--border)'}`,
+                  borderRadius: '24px',
+                  color: '#fff',
+                  textDecoration: 'none',
+                  fontWeight: 500,
+                  fontSize: '13px',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = user?.accentColor ? `${user.accentColor}30` : 'var(--bg-2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = user?.accentColor ? `${user.accentColor}15` : 'var(--bg-3)';
+                }}
+              >
+                <div style={{ 
+                  width: '26px', 
+                  height: '26px', 
+                  borderRadius: '50%', 
+                  background: user?.accentColor || 'var(--purple)', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  fontSize: '11px', 
+                  fontWeight: 'bold', 
+                  color: user?.accentColor ? '#fff' : 'var(--bg)' 
+                }}>
+                  {getInitials(user?.name)}
+                </div>
+                Dashboard
+              </Link>
+            ) : (
             <>
               <Link to="/beta" className="btn-outline">Join Beta</Link>
               <Link to="/login" className="btn-ghost">Login</Link>
@@ -87,7 +120,7 @@ export default function Navbar() {
         ))}
         <div className="nav-mobile-divider"></div>
         {isAuthenticated ? (
-          <Link to="/dashboard" style={{ color: 'var(--gold)', fontWeight: 500 }} onClick={closeMenu}>Dashboard</Link>
+          <Link to="/dashboard" style={{ color: user?.accentColor || 'var(--gold)', fontWeight: 500 }} onClick={closeMenu}>Dashboard</Link>
         ) : (
           <>
             <Link to="/beta" style={{ color: 'var(--gold)', fontWeight: 500 }} onClick={closeMenu}>Join Beta — Free</Link>

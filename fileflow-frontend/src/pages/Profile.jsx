@@ -18,20 +18,22 @@ export default function Profile() {
   };
 
   return (
-    <>
+    <div className="profile-wrap">
       {/* Banner */}
-      <div className="profile-banner">
-        <div className="banner-pattern"></div>
-        <div className="banner-geo" style={{ borderWidth: '0 30px 52px 30px', borderColor: 'transparent transparent var(--gold) transparent', opacity: 0.08, top: '20px', right: '120px' }}></div>
-        <div className="banner-geo" style={{ borderWidth: '0 18px 31px 18px', borderColor: 'transparent transparent var(--purple-2) transparent', opacity: 0.12, bottom: '30px', left: '40%', animation: 'float 7s ease-in-out infinite' }}></div>
+      <div className="profile-banner" style={{ background: user?.accentColor ? `linear-gradient(135deg, ${user.accentColor}44 0%, var(--bg-1) 100%)` : undefined }}>
+        <div className="banner-pattern" style={{ backgroundImage: user?.accentColor ? `linear-gradient(${user.accentColor}55 1px, transparent 1px), linear-gradient(90deg, ${user.accentColor}55 1px, transparent 1px)` : undefined }}></div>
+        <div className="banner-geo" style={{ borderWidth: '0 30px 52px 30px', borderColor: `transparent transparent ${user?.accentColor || 'var(--gold)'} transparent`, opacity: user?.accentColor ? 0.3 : 0.08, top: '20px', right: '120px' }}></div>
+        <div className="banner-geo" style={{ borderWidth: '0 18px 31px 18px', borderColor: `transparent transparent ${user?.accentColor || 'var(--purple-2)'} transparent`, opacity: user?.accentColor ? 0.4 : 0.12, bottom: '30px', left: '40%', animation: 'float 7s ease-in-out infinite' }}></div>
         <div className="banner-edit">
-          <button className="btn-ghost" style={{ fontSize: '12px', padding: '7px 14px' }}>Edit profile</button>
+          <Link to="/dashboard/settings" className="btn-ghost" style={{ fontSize: '12px', padding: '7px 14px' }}>Edit profile</Link>
         </div>
       </div>
 
       {/* Identity */}
       <div className="profile-identity">
-        <div className="profile-av">{getInitials(user?.name)}</div>
+        <div className="profile-av" style={{ background: user?.accentColor || 'var(--purple)', color: user?.accentColor ? '#fff' : 'var(--bg)' }}>
+          {getInitials(user?.name)}
+        </div>
         <div className="profile-name-block">
           <div className="profile-name">{user?.name || 'User'}</div>
           <div className="profile-handle">@{user?.handle || user?.name?.toLowerCase().replace(/\s+/g, '_') || 'user'} · Member since {getJoinDate(user?.createdAt)}</div>
@@ -59,7 +61,7 @@ export default function Profile() {
           {/* Achievements showcase */}
           <div className="section-hdr">
             <h3>🏆 Achievements</h3>
-            <Link to="/achievements">View all 40 →</Link>
+            <Link to="/dashboard/achievements">View all 40 →</Link>
           </div>
           <div className="ach-showcase">
             <div className="ach-card"><span className="ach-emoji">🔍</span><div className="ach-name">First Search</div><div className="ach-rarity rarity-common">Common</div></div>
@@ -115,6 +117,6 @@ export default function Profile() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

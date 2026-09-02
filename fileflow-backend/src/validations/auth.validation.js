@@ -21,6 +21,27 @@ export const updateProfileSchema = z.object({
     handle: z.string().optional(),
     bio: z.string().max(250).optional(),
     location: z.string().optional(),
-    avatar: z.string().url('Invalid URL').optional()
+    avatar: z.string().url('Invalid URL').optional(),
+    accentColor: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).optional(),
+    socialLinks: z.object({
+      facebook: z.string().optional(),
+      instagram: z.string().optional(),
+      linkedin: z.string().optional(),
+      x: z.string().optional(),
+    }).optional()
+  })
+});
+
+export const updateEmailSchema = z.object({
+  body: z.object({
+    newEmail: z.string({ required_error: 'New email is required' }).email('Invalid email address'),
+    currentPassword: z.string({ required_error: 'Current password is required' }).min(1, 'Current password is required')
+  })
+});
+
+export const updatePasswordSchema = z.object({
+  body: z.object({
+    currentPassword: z.string({ required_error: 'Current password is required' }).min(1, 'Current password is required'),
+    newPassword: z.string({ required_error: 'New password is required' }).min(6, 'Password must be at least 6 characters')
   })
 });

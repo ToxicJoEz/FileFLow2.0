@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { login, register, logout, googleLogin } from '../services/auth.service';
-import { getMe } from '../services/user.service';
+import { getMe, updateMe, updateEmail as updateEmailApi, updatePassword as updatePasswordApi } from '../services/user.service';
 import { toast } from 'react-toastify';
 
 export const useAuthStore = create((set, get) => ({
@@ -49,6 +49,48 @@ export const useAuthStore = create((set, get) => ({
     } catch (error) {
       set({ isLoading: false });
       toast.error(error.response?.data?.message || 'Registration failed');
+      return false;
+    }
+  },
+
+  updateProfile: async (userData) => {
+    set({ isLoading: true });
+    try {
+      const { data } = await updateMe(userData);
+      set({ user: data, isLoading: false });
+      toast.success('Profile updated successfully');
+      return true;
+    } catch (error) {
+      set({ isLoading: false });
+      toast.error(error.response?.data?.message || 'Failed to update profile');
+      return false;
+    }
+  },
+
+  updateEmail: async (data) => {
+    set({ isLoading: true });
+    try {
+      const { data: updatedUser } = await updateEmailApi(data);
+      set({ user: updatedUser, isLoading: false });
+      toast.success('Email updated successfully');
+      return true;
+    } catch (error) {
+      set({ isLoading: false });
+      toast.error(error.response?.data?.message || 'Failed to update email');
+      return false;
+    }
+  },
+
+  updatePassword: async (data) => {
+    set({ isLoading: true });
+    try {
+      await updatePasswordApi(data);
+      set({ isLoading: false });
+      toast.success('Password updated successfully');
+      return true;
+    } catch (error) {
+      set({ isLoading: false });
+      toast.error(error.response?.data?.message || 'Failed to update password');
       return false;
     }
   },

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useOutlet, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import Sidebar from './Sidebar';
 
 const pageVariants = {
   initial: { opacity: 0, y: 20 },
@@ -20,56 +19,26 @@ export default function Layout() {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  const hideFooterPaths = ['/dashboard', '/profile', '/achievements', '/payment', '/login', '/beta'];
-  const showFooter = !hideFooterPaths.includes(location.pathname);
+  const hideFooterPaths = ['/dashboard', '/dashboard/profile', '/dashboard/achievements', '/payment', '/login', '/beta'];
+  const showFooter = !hideFooterPaths.some(path => location.pathname === path || location.pathname.startsWith('/dashboard'));
 
-  const appShellPaths = ['/dashboard', '/profile', '/achievements'];
-  const isAppShell = appShellPaths.includes(location.pathname);
-  const frozenOutlet = outlet ? React.cloneElement(outlet, { key: location.pathname }) : null;
-  const appShellLayoutKey = "app-shell-wrapper";
+  const baseKey = location.pathname.startsWith('/dashboard') ? '/dashboard' : location.pathname;
+  const frozenOutlet = outlet ? React.cloneElement(outlet, { key: baseKey }) : null;
 
   return (
     <>
       <Navbar />
       <AnimatePresence mode="wait">
-        {isAppShell ? (
-          <motion.div
-            key={appShellLayoutKey}
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className="page-wrap"
-          >
-            <div className="app-shell">
-              <Sidebar />
-              <AnimatePresence mode="wait">
-                <motion.main
-                  key={location.pathname}
-                  variants={pageVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  className="app-main"
-                  style={{ width: '100%', overflow: 'hidden' }}
-                >
-                  {frozenOutlet}
-                </motion.main>
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        ) : (
-          <motion.main
-            key={location.pathname}
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className="page-wrap"
-          >
-            {frozenOutlet}
-          </motion.main>
-        )}
+        <motion.main
+          key={baseKey}
+          variants={pageVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          className="page-wrap"
+        >
+          {frozenOutlet}
+        </motion.main>
       </AnimatePresence>
       {showFooter && <Footer />}
     </>

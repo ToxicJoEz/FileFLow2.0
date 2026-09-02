@@ -22,6 +22,12 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   margin-bottom: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.sidebar-user:hover {
+  border-color: var(--gold-glow);
+  background: var(--bg-3);
 }
 .sidebar-av {
   width: 40px;

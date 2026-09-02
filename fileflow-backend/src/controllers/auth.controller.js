@@ -20,6 +20,23 @@ const sendTokenResponse = (user, statusCode, res) => {
     });
 };
 
+const ACCENT_COLORS = [
+  '#8b5cf6', // Purple
+  '#f59e0b', // Gold
+  '#ec4899', // Pink
+  '#f43f5e', // Rose
+  '#f97316', // Orange
+  '#84cc16', // Lime
+  '#10b981', // Emerald
+  '#14b8a6', // Teal
+  '#06b6d4', // Cyan
+  '#0ea5e9', // Sky Blue
+  '#3b82f6', // Blue
+  '#6366f1', // Indigo
+];
+
+const getRandomAccentColor = () => ACCENT_COLORS[Math.floor(Math.random() * ACCENT_COLORS.length)];
+
 // @desc      Register user
 // @route     POST /api/auth/register
 // @access    Public
@@ -37,7 +54,8 @@ export const register = catchAsync(async (req, res, next) => {
   const user = await User.create({
     name,
     email,
-    password
+    password,
+    accentColor: getRandomAccentColor()
   });
 
   sendTokenResponse(user, 201, res);
@@ -102,6 +120,7 @@ export const googleLogin = async (req, res, next) => {
         name,
         email,
         password: randomPassword, // Generate a secure random password since they use Google
+        accentColor: getRandomAccentColor()
       });
     }
 

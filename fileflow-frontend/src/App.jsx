@@ -17,14 +17,17 @@ import Beta from './pages/Beta';
 import Blog from './pages/Blog';
 import Changelog from './pages/Changelog';
 import Community from './pages/Community';
+import TopicDetail from './pages/TopicDetail';
 import Contact from './pages/Contact';
 import Dashboard from './pages/Dashboard';
+import DashboardLayout from './pages/DashboardLayout';
 import Payment from './pages/Payment';
 import Pricing from './pages/Pricing';
 import Privacy from './pages/Privacy';
 import Profile from './pages/Profile';
 import Roadmap from './pages/Roadmap';
 import Screenshots from './pages/Screenshots';
+import Settings from './pages/Settings';
 import Terms from './pages/Terms';
 
 function App() {
@@ -82,33 +85,27 @@ function App() {
           
           <Route path="about" element={<About />} />
           
-          <Route path="achievements" element={
-            <ProtectedRoute>
-              <Achievements />
-            </ProtectedRoute>
-          } />
-          
           <Route path="beta" element={<Beta />} />
           <Route path="blog" element={<Blog />} />
           <Route path="changelog" element={<Changelog />} />
           <Route path="community" element={<Community />} />
+          <Route path="community/:topicId" element={<TopicDetail />} />
           <Route path="contact" element={<Contact />} />
           
           <Route path="dashboard" element={
             <ProtectedRoute>
-              <Dashboard />
+              <DashboardLayout />
             </ProtectedRoute>
-          } />
+          }>
+            <Route index element={<Dashboard />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="achievements" element={<Achievements />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
           
           <Route path="payment" element={<Payment />} />
           <Route path="pricing" element={<Pricing />} />
           <Route path="privacy" element={<Privacy />} />
-          
-          <Route path="profile" element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          } />
           
           <Route path="roadmap" element={<Roadmap />} />
           <Route path="screenshots" element={<Screenshots />} />

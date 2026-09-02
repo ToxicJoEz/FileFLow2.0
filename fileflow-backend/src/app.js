@@ -10,6 +10,8 @@ import userRoutes from './routes/user.routes.js';
 import formRoutes from './routes/form.routes.js';
 import featureRoutes from './routes/feature.routes.js';
 import blogRoutes from './routes/blog.routes.js';
+import communityRoutes from './routes/community.routes.js';
+import { recordActivity } from './utils/onlineTracker.js';
 
 const app = express();
 
@@ -42,12 +44,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
 
+// Zero-cost activity tracking
+app.use('/api', (req, res, next) => {
+  recordActivity(req);
+  next();
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/forms', formRoutes);
 app.use('/api/features', featureRoutes);
 app.use('/api/blog', blogRoutes);
+app.use('/api/community', communityRoutes);
 
 // 404 handler
 app.use((req, res, next) => {

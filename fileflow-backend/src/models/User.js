@@ -34,9 +34,19 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  socialLinks: {
+    facebook: { type: String, default: '' },
+    instagram: { type: String, default: '' },
+    linkedin: { type: String, default: '' },
+    x: { type: String, default: '' }
+  },
   avatar: {
     type: String,
     default: ''
+  },
+  accentColor: {
+    type: String,
+    default: '#8b5cf6'
   },
   role: {
     type: String,

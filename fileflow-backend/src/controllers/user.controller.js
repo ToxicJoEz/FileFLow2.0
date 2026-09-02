@@ -35,7 +35,7 @@ export const getMe = catchAsync(async (req, res, next) => {
 // @access    Private
 export const updateMe = catchAsync(async (req, res, next) => {
   // Extract fields that are allowed to be updated
-  const { name, handle, bio, location, avatar } = req.body;
+  const { name, handle, bio, location, avatar, socialLinks, accentColor } = req.body;
   
   const fieldsToUpdate = {};
   if (name) fieldsToUpdate.name = name;
@@ -43,11 +43,58 @@ export const updateMe = catchAsync(async (req, res, next) => {
   if (bio !== undefined) fieldsToUpdate.bio = bio;
   if (location !== undefined) fieldsToUpdate.location = location;
   if (avatar !== undefined) fieldsToUpdate.avatar = avatar;
+  if (socialLinks !== undefined) fieldsToUpdate.socialLinks = socialLinks;
+  if (accentColor !== undefined) fieldsToUpdate.accentColor = accentColor;
 
   const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
     new: true,
     runValidators: true
   });
+
+  res.status(200).json({
+    success: true,
+    data: user
+  });
+});
+// @desc      Update user email
+// @route     PUT /api/users/me/email
+// @access    Private
+export const updateEmail = catchAsync(async (req, res, next) => {
+  const { newEmail, currentPassword } = req.body;
+
+  const user = await User.findById(req.user.id).select('+password');
+
+  const isMatch = await user.matchPassword(currentPassword);
+  if (!isMatch) {
+    res.status(401);
+    throw new Error('Incorrect current password');
+  }
+
+  user.email = newEmail;
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    data: user
+  });
+});
+
+// @desc      Update user password
+// @route     PUT /api/users/me/password
+// @access    Private
+export const updatePassword = catchAsync(async (req, res, next) => {
+  const { currentPassword, newPassword } = req.body;
+
+  const user = await User.findById(req.user.id).select('+password');
+
+  const isMatch = await user.matchPassword(currentPassword);
+  if (!isMatch) {
+    res.status(401);
+    throw new Error('Incorrect current password');
+  }
+
+  user.password = newPassword;
+  await user.save();
 
   res.status(200).json({
     success: true,

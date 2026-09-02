@@ -5,14 +5,24 @@ import {
   Search, Filter, Terminal, Zap, Shield, File
 } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { subscribeNewsletter } from '../services/form.service';
 
 export default function Home() {
   const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleBetaSubmit = () => {
+  const handleBetaSubmit = async () => {
     if (email && email.includes('@')) {
-      toast.success("You're on the list!");
-      setEmail('');
+      setIsSubmitting(true);
+      try {
+        await subscribeNewsletter(email);
+        toast.success("You're on the list!");
+        setEmail('');
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Something went wrong");
+      } finally {
+        setIsSubmitting(false);
+      }
     } else {
       toast.error("Please enter a valid email");
     }
@@ -272,8 +282,11 @@ export default function Home() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleBetaSubmit()}
+                disabled={isSubmitting}
               />
-              <button className="cta-btn" onClick={handleBetaSubmit}>Get early access</button>
+              <button className="cta-btn" onClick={handleBetaSubmit} disabled={isSubmitting}>
+                {isSubmitting ? 'Joining...' : 'Get early access'}
+              </button>
             </div>
             <p className="cta-meta">Windows 10 / 11 &nbsp;·&nbsp; 12 MB download &nbsp;·&nbsp; No cloud, ever</p>
           </div>

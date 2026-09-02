@@ -1,13 +1,26 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { subscribeNewsletter } from '../services/form.service';
 
 export default function Changelog() {
   const [activeVersion, setActiveVersion] = useState('v094');
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    toast.success("Subscribed successfully!");
+    if (!email) return;
+    setIsSubmitting(true);
+    try {
+      await subscribeNewsletter(email);
+      toast.success("Subscribed successfully!");
+      setEmail('');
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Subscription failed");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleScroll = (id) => {
@@ -57,11 +70,19 @@ export default function Changelog() {
             </button>
             
             <div className="cl-sub">
-              <h4>📬 Stay updated</h4>
+              <h4>🎉 Stay updated</h4>
               <p>Get release notes in your inbox.</p>
               <form className="cl-sub-row" onSubmit={handleSubscribe}>
-                <input className="input" type="email" placeholder="your@email.com" required />
-                <button type="submit">→</button>
+                <input 
+                  className="input" 
+                  type="email" 
+                  placeholder="your@email.com" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required 
+                  disabled={isSubmitting}
+                />
+                <button type="submit" disabled={isSubmitting}>→</button>
               </form>
             </div>
           </div>

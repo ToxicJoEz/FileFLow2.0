@@ -60,7 +60,7 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="widget">
-          <div className="widget-title">Achievements <span style={{ fontSize: '11px', fontFamily: 'var(--mono)', color: 'var(--text-4)', fontWeight: 400 }}><Link to="/achievements" style={{ color: 'var(--gold)', textDecoration: 'none' }}>View all →</Link></span></div>
+          <div className="widget-title">Achievements <span style={{ fontSize: '11px', fontFamily: 'var(--mono)', color: 'var(--text-4)', fontWeight: 400 }}><Link to="/dashboard/achievements" style={{ color: 'var(--gold)', textDecoration: 'none' }}>View all →</Link></span></div>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {achs.map((a, i) => (
               <div 
