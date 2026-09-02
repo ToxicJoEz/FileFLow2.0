@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, MapPin, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { avatarUrl } from '../utils/avatarUrl';
 
 export default function UserCardModal({ user, onClose }) {
   // Prevent scrolling on body when modal is open
@@ -115,7 +116,7 @@ export default function UserCardModal({ user, onClose }) {
               {/* Avatar */}
               <div style={{
                 width: '88px', height: '88px', borderRadius: '50%',
-                background: user?.hasAvatar ? `url(http://localhost:5000/api/users/${user._id}/avatar?v=${user.avatarVersion || 0}) center/cover no-repeat` : (user?.accentColor || 'var(--purple)'),
+                background: user?.hasAvatar ? `url(${avatarUrl(user._id, user.avatarVersion || 0)}) center/cover no-repeat` : (user?.accentColor || 'var(--purple)'),
                 border: '4px solid rgba(28, 12, 56, 1)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontFamily: 'var(--display)', fontSize: '28px', fontWeight: 800, color: '#fff',

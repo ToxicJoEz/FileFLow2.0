@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, User, Award, CreditCard, Settings, MessageSquare, LogOut, Users, Shield } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import UserCardModal from './UserCardModal';
+import { avatarUrl } from '../utils/avatarUrl';
 
 export default function Sidebar() {
   const { user, logoutUser } = useAuthStore();
@@ -28,7 +29,7 @@ export default function Sidebar() {
           <div 
             className="sidebar-av"
             style={{
-              background: user?.hasAvatar ? `url(http://localhost:5000/api/users/${user._id}/avatar?v=${user.avatarVersion || 0}) center/cover no-repeat` : (user?.accentColor || 'var(--purple)'),
+              background: user?.hasAvatar ? `url(${avatarUrl(user._id, user.avatarVersion || 0)}) center/cover no-repeat` : (user?.accentColor || 'var(--purple)'),
               color: user?.accentColor ? '#fff' : 'var(--bg)'
             }}
           >

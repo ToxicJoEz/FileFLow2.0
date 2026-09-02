@@ -5,6 +5,7 @@ import AdminUserActionModal from '../components/AdminUserActionModal';
 import AdminEditUserModal from '../components/AdminEditUserModal';
 import CustomSelect from '../components/CustomSelect';
 import { toast } from 'react-toastify';
+import { avatarUrl } from '../utils/avatarUrl';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
@@ -287,7 +288,7 @@ export default function AdminUsers() {
                     height: '46px',
                     borderRadius: '50%',
                     background: u.hasAvatar 
-                      ? `url(http://localhost:5000/api/users/${u._id}/avatar?v=${u.avatarVersion || 0}) center/cover no-repeat` 
+                      ? `url(${avatarUrl(u._id, u.avatarVersion || 0)}) center/cover no-repeat` 
                       : (u.accentColor || 'var(--purple)'),
                     display: 'flex',
                     alignItems: 'center',

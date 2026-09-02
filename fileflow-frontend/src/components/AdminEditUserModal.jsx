@@ -6,6 +6,7 @@ import { getAdminUserTopics, getAdminUserReplies, deleteTopic, restoreTopic, tog
 import CustomSelect from './CustomSelect';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import { avatarUrl } from '../utils/avatarUrl';
 
 const ACCENT_COLORS = [
   '#8b5cf6', '#f59e0b', '#ec4899', '#f43f5e', 
@@ -242,7 +243,7 @@ export default function AdminEditUserModal({ user, onClose, onUserUpdated }) {
           {activeTab === 'edit' && (
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px', background: 'var(--bg-1)', padding: '12px 16px', borderRadius: '12px', border: '1px solid var(--border)' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: user.hasAvatar ? `url(http://localhost:5000/api/users/${user._id}/avatar?v=${user.avatarVersion || 0}) center/cover no-repeat` : (formData.accentColor || 'var(--purple)'), display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 800, color: '#fff', flexShrink: 0 }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: user.hasAvatar ? `url(${avatarUrl(user._id, user.avatarVersion || 0)}) center/cover no-repeat` : (formData.accentColor || 'var(--purple)'), display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 800, color: '#fff', flexShrink: 0 }}>
                   {!user.hasAvatar && getInitials(formData.name)}
                 </div>
                 <div style={{ flex: 1 }}>

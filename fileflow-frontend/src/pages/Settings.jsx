@@ -5,6 +5,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { compressImage, readFile } from '../utils/imageCompression';
 import ImageCropperModal from '../components/ImageCropperModal';
 import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
+import { avatarUrl } from '../utils/avatarUrl';
 
 const ACCENT_COLORS = [
   '#8b5cf6', '#f59e0b', '#ec4899', '#f43f5e', 
@@ -206,7 +207,7 @@ export default function Settings() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
                 <div style={{ 
                   width: '80px', height: '80px', borderRadius: '50%', 
-                  background: user?.hasAvatar ? `url(http://localhost:5000/api/users/${user._id}/avatar?v=${user.avatarVersion || 0}) center/cover no-repeat` : (user?.accentColor || 'var(--purple)'), 
+                  background: user?.hasAvatar ? `url(${avatarUrl(user._id, user.avatarVersion || 0)}) center/cover no-repeat` : (user?.accentColor || 'var(--purple)'), 
                   display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--display)', fontSize: '24px', 
                   fontWeight: 800, color: user?.accentColor ? '#fff' : 'var(--bg)', flexShrink: 0 
                 }}>

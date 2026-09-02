@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { useAuthStore } from '../store/useAuthStore';
 import * as communityService from '../services/community.service';
 import Loader from '../components/Loader';
+import { avatarUrl } from '../utils/avatarUrl';
 import NewThreadModal from '../components/NewThreadModal';
 
 export const categoryConfig = {
@@ -241,7 +242,7 @@ export default function Community() {
                                       height: '18px',
                                       borderRadius: '50%',
                                       background: topic.author?.hasAvatar 
-                                        ? `url(http://localhost:5000/api/users/${topic.author._id}/avatar?v=${topic.author.avatarVersion || 0}) center/cover no-repeat` 
+                                        ? `url(${avatarUrl(topic.author._id, topic.author.avatarVersion || 0)}) center/cover no-repeat` 
                                         : (topic.author?.accentColor || 'var(--purple)'),
                                       display: 'inline-flex',
                                       alignItems: 'center',

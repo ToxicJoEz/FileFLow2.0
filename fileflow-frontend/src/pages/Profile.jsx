@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Trophy, MessageSquare, ArrowUp, Mail, MapPin } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
+import { avatarUrl } from '../utils/avatarUrl';
 
 export default function Profile() {
   const { user } = useAuthStore();
@@ -31,7 +32,7 @@ export default function Profile() {
 
       {/* Identity */}
       <div className="profile-identity">
-        <div className="profile-av" style={{ background: user?.hasAvatar ? `url(http://localhost:5000/api/users/${user._id}/avatar?v=${user.avatarVersion || 0}) center/cover no-repeat` : (user?.accentColor || 'var(--purple)'), color: user?.accentColor ? '#fff' : 'var(--bg)' }}>
+        <div className="profile-av" style={{ background: user?.hasAvatar ? `url(${avatarUrl(user._id, user.avatarVersion || 0)}) center/cover no-repeat` : (user?.accentColor || 'var(--purple)'), color: user?.accentColor ? '#fff' : 'var(--bg)' }}>
           {!user?.hasAvatar && getInitials(user?.name)}
         </div>
         <div className="profile-name-block">

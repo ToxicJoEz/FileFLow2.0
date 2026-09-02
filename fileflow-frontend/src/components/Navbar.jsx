@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
+import { avatarUrl } from '../utils/avatarUrl';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -78,7 +79,7 @@ export default function Navbar() {
                   width: '26px', 
                   height: '26px', 
                   borderRadius: '50%', 
-                  background: user?.hasAvatar ? `url(http://localhost:5000/api/users/${user._id}/avatar?v=${user.avatarVersion || 0}) center/cover no-repeat` : (user?.accentColor || 'var(--purple)'), 
+                  background: user?.hasAvatar ? `url(${avatarUrl(user._id, user.avatarVersion || 0)}) center/cover no-repeat` : (user?.accentColor || 'var(--purple)'), 
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center', 
