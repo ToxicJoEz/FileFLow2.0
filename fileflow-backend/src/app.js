@@ -18,16 +18,19 @@ const app = express();
 // Security Middlewares
 app.use(helmet());
 app.use(cors({
-  origin: function (origin, callback) {
-    const allowed = process.env.CLIENT_URL || 'http://localhost:5173';
-    if (!origin || origin.replace(/\/$/, '') === allowed.replace(/\/$/, '')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
+    origin: function (origin, callback) {
+      const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, '') : null;
+      // Allow the live website, local desktop app, and server-to-server (!origin)
+      const allowedOrigins = [clientUrl, 'http://localhost:5173', 'http://127.0.0.1:5173'].filter(Boolean);
+      
+      if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ''))) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true
+  }));
 
 // Rate Limiting
 const limiter = rateLimit({
