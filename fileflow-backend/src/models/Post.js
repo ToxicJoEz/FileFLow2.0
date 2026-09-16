@@ -31,8 +31,9 @@ const postSchema = new mongoose.Schema(
       default: 5,
     },
     author: {
-      type: String,
-      default: 'FileFlow Team',
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: true,
     },
     thumbnailUrl: {
       type: String,

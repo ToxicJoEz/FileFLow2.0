@@ -6,6 +6,7 @@ import remarkGfm from 'remark-gfm';
 import { useAuthStore } from '../store/useAuthStore';
 import { getPosts, getPopularPosts, deletePost, getPostBySlug } from '../services/blog.service';
 import { subscribeNewsletter } from '../services/form.service';
+import { avatarUrl } from '../utils/avatarUrl';
 import BlogEditorModal from '../components/BlogEditorModal';
 import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
 import Loader from '../components/Loader';
@@ -226,10 +227,21 @@ export default function Blog() {
                       <p className="featured-body-excerpt">{featuredPost.excerpt}</p>
                       
                       <div className="flex items-center gap-3 mt-8">
-                        <div className="article-avatar">FF</div>
+                        {featuredPost.author?.hasAvatar ? (
+                          <img 
+                            src={avatarUrl(featuredPost.author._id, featuredPost.author.avatarVersion)} 
+                            alt={featuredPost.author.name} 
+                            className="article-avatar" 
+                            style={{ border: 'none', background: 'transparent', objectFit: 'cover' }} 
+                          />
+                        ) : (
+                          <div className="article-avatar" style={{ background: featuredPost.author?.accentColor || 'var(--purple-2)', color: '#fff' }}>
+                            {featuredPost.author?.name?.charAt(0) || 'F'}
+                          </div>
+                        )}
                         <div>
-                          <div className="text-[var(--text)] font-semibold font-display">FileFlow Team</div>
-                          <div className="text-[var(--gold)] text-xs font-mono">file-flow.com</div>
+                          <div className="text-[var(--text)] font-semibold font-display">{featuredPost.author?.name || 'FileFlow Team'}</div>
+                          <div className="text-[var(--gold)] text-xs font-mono">{featuredPost.author?.handle ? `@${featuredPost.author.handle}` : 'file-flow.com'}</div>
                         </div>
                       </div>
 
@@ -332,10 +344,21 @@ export default function Blog() {
                   <h1 className="article-title">{activePost.title}</h1>
                   <div className="article-meta flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="article-avatar">FF</div>
+                      {activePost.author?.hasAvatar ? (
+                        <img 
+                          src={avatarUrl(activePost.author._id, activePost.author.avatarVersion)} 
+                          alt={activePost.author.name} 
+                          className="article-avatar" 
+                          style={{ border: 'none', background: 'transparent', objectFit: 'cover' }} 
+                        />
+                      ) : (
+                        <div className="article-avatar" style={{ background: activePost.author?.accentColor || 'var(--purple-2)', color: '#fff' }}>
+                          {activePost.author?.name?.charAt(0) || 'F'}
+                        </div>
+                      )}
                       <div>
-                        <div className="article-author-name">{activePost.author}</div>
-                        <div className="article-author-domain">file-flow.com</div>
+                        <div className="article-author-name">{activePost.author?.name || 'FileFlow Team'}</div>
+                        <div className="article-author-domain">{activePost.author?.handle ? `@${activePost.author.handle}` : 'file-flow.com'}</div>
                       </div>
                     </div>
                     <div className="flex gap-2">

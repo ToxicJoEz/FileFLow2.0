@@ -5,7 +5,9 @@ import { catchAsync } from '../utils/catchAsync.js';
 // @route   GET /api/blog
 // @access  Public
 export const getPosts = catchAsync(async (req, res) => {
-  const posts = await Post.find({ status: 'published' }).sort({ createdAt: -1 });
+  const posts = await Post.find({ status: 'published' })
+    .populate('author', 'name handle avatarData avatarVersion accentColor hasAvatar role')
+    .sort({ createdAt: -1 });
   res.status(200).json({ success: true, data: posts });
 });
 
@@ -13,7 +15,9 @@ export const getPosts = catchAsync(async (req, res) => {
 // @route   GET /api/blog/admin
 // @access  Private/Admin
 export const getAdminPosts = catchAsync(async (req, res) => {
-  const posts = await Post.find().sort({ createdAt: -1 });
+  const posts = await Post.find()
+    .populate('author', 'name handle avatarData avatarVersion accentColor hasAvatar role')
+    .sort({ createdAt: -1 });
   res.status(200).json({ success: true, data: posts });
 });
 
@@ -21,7 +25,9 @@ export const getAdminPosts = catchAsync(async (req, res) => {
 // @route   GET /api/blog/popular
 // @access  Public
 export const getPopularPosts = catchAsync(async (req, res) => {
-  const posts = await Post.find({ status: 'published' }).sort({ views: -1 }).limit(4);
+  const posts = await Post.find({ status: 'published' })
+    .populate('author', 'name handle avatarData avatarVersion accentColor hasAvatar role')
+    .sort({ views: -1 }).limit(4);
   res.status(200).json({ success: true, data: posts });
 });
 
@@ -33,7 +39,7 @@ export const getPostBySlug = catchAsync(async (req, res) => {
     { slug: req.params.slug, status: 'published' },
     { $inc: { views: 1 } },
     { new: true }
-  );
+  ).populate('author', 'name handle avatarData avatarVersion accentColor hasAvatar role');
 
   if (!post) {
     return res.status(404).json({ success: false, message: 'Post not found' });
@@ -49,8 +55,14 @@ export const createPost = catchAsync(async (req, res) => {
   if (req.body.isFeatured) {
     await Post.updateMany({}, { isFeatured: false });
   }
+  
+  // Set author to the admin creating the post
+  req.body.author = req.user.id;
+  
   const post = await Post.create(req.body);
-  res.status(201).json({ success: true, data: post });
+  const populatedPost = await Post.findById(post._id).populate('author', 'name handle avatarData avatarVersion accentColor hasAvatar role');
+  
+  res.status(201).json({ success: true, data: populatedPost });
 });
 
 // @desc    Update post
