@@ -55,6 +55,7 @@ app.use('/api', (req, res, next) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/search-events', searchEventRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/forms', formRoutes);
 app.use('/api/features', featureRoutes);
