@@ -1,10 +1,10 @@
 ﻿import SearchEvent from '../models/SearchEvent.js';
-import asyncHandler from '../middlewares/async.js';
+import { catchAsync } from '../utils/catchAsync.js';
 
 // @desc    Log a new search event
 // @route   POST /api/search-events
 // @access  Private
-export const logSearchEvent = asyncHandler(async (req, res, next) => {
+export const logSearchEvent = catchAsync(async (req, res, next) => {
   req.body.user = req.user.id;
   req.body.role = req.user.role;
 
@@ -19,7 +19,7 @@ export const logSearchEvent = asyncHandler(async (req, res, next) => {
 // @desc    Get current user's search history
 // @route   GET /api/search-events/history
 // @access  Private
-export const getMySearchHistory = asyncHandler(async (req, res, next) => {
+export const getMySearchHistory = catchAsync(async (req, res, next) => {
   const events = await SearchEvent.find({ user: req.user.id }).sort('-createdAt').limit(50);
 
   res.status(200).json({
@@ -32,7 +32,7 @@ export const getMySearchHistory = asyncHandler(async (req, res, next) => {
 // @desc    Get aggregate analytics (Admin only)
 // @route   GET /api/search-events/analytics
 // @access  Private/Admin
-export const getAnalytics = asyncHandler(async (req, res, next) => {
+export const getAnalytics = catchAsync(async (req, res, next) => {
   // Simple aggregation example
   const totalSearches = await SearchEvent.countDocuments();
   const successfulSearches = await SearchEvent.countDocuments({ status: 'success' });

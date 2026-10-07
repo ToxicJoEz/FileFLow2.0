@@ -1,6 +1,6 @@
 ﻿import express from 'express';
 import { logSearchEvent, getMySearchHistory, getAnalytics } from '../controllers/searchEventController.js';
-import { protect, authorize } from '../middlewares/auth.js';
+import { protect, authorize } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
