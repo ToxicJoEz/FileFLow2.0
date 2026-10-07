@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import { rateLimit } from 'express-rate-limit';
 import { errorHandler } from './middlewares/error.middleware.js';
 import authRoutes from './routes/auth.routes.js';
+import searchEventRoutes from './routes/searchEventRoutes.js';
 import userRoutes from './routes/user.routes.js';
 import formRoutes from './routes/form.routes.js';
 import featureRoutes from './routes/feature.routes.js';
