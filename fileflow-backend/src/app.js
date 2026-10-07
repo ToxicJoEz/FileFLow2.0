@@ -24,7 +24,7 @@ app.use(cors({
       // Allow the live website, local desktop app, and server-to-server (!origin)
       const allowedOrigins = [clientUrl, 'http://localhost:5173', 'http://127.0.0.1:5173'].filter(Boolean);
       
-      if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ''))) {
+      if (!origin || origin === 'null' || allowedOrigins.includes(origin.replace(/\/$/, ''))) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
