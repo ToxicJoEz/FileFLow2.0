@@ -88,6 +88,14 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Never serialize password hashes, including explicitly selected update queries.
+userSchema.set('toJSON', {
+  transform: (_doc, result) => {
+    delete result.password;
+    return result;
+  }
+});
+
 // Encrypt password using bcrypt
 userSchema.pre('save', async function () {
   if (!this.isModified('password')) {

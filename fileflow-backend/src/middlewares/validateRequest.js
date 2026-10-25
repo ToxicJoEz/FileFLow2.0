@@ -1,10 +1,13 @@
 export const validateRequest = (schema) => (req, res, next) => {
   try {
-    schema.parse({
+    const validated = schema.parse({
       body: req.body,
       query: req.query,
       params: req.params,
     });
+    // Express 5 query is a getter; these schemas currently validate request bodies.
+    if (validated.body !== undefined) req.body = validated.body;
+    if (validated.params !== undefined) req.params = validated.params;
     next();
   } catch (error) {
     res.status(400);

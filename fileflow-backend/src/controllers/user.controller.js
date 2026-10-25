@@ -19,7 +19,7 @@ export const getMe = catchAsync(async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
-    if (!user) {
+    if (!user || user.isDeleted || user.isBanned) {
       return res.status(200).json({ success: true, data: null });
     }
     res.status(200).json({
@@ -27,7 +27,10 @@ export const getMe = catchAsync(async (req, res, next) => {
       data: user
     });
   } catch (error) {
-    return res.status(200).json({ success: true, data: null });
+    if (['JsonWebTokenError', 'TokenExpiredError', 'NotBeforeError'].includes(error.name)) {
+      return res.status(200).json({ success: true, data: null });
+    }
+    throw error;
   }
 });
 
@@ -95,7 +98,7 @@ export const updateEmail = catchAsync(async (req, res, next) => {
 
   const isMatch = await user.matchPassword(currentPassword);
   if (!isMatch) {
-    res.status(401);
+    res.status(400);
     throw new Error('Incorrect current password');
   }
 
@@ -118,7 +121,7 @@ export const updatePassword = catchAsync(async (req, res, next) => {
 
   const isMatch = await user.matchPassword(currentPassword);
   if (!isMatch) {
-    res.status(401);
+    res.status(400);
     throw new Error('Incorrect current password');
   }
 

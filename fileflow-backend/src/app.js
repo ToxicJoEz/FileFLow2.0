@@ -6,7 +6,7 @@ import morgan from 'morgan';
 import { rateLimit } from 'express-rate-limit';
 import { errorHandler } from './middlewares/error.middleware.js';
 import authRoutes from './routes/auth.routes.js';
-import searchEventRoutes from './routes/searchEventRoutes.js';
+import adminLogRoutes from './routes/adminLog.routes.js';
 import userRoutes from './routes/user.routes.js';
 import formRoutes from './routes/form.routes.js';
 import featureRoutes from './routes/feature.routes.js';
@@ -33,6 +33,9 @@ app.use(cors({
     credentials: true
   }));
 
+// Diagnostics have a separate authenticated account-based budget and strict size cap.
+app.use('/api/admin-logs', express.json({limit:'256kb'}), adminLogRoutes);
+
 // Rate Limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -56,7 +59,6 @@ app.use('/api', (req, res, next) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/search-events', searchEventRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/forms', formRoutes);
 app.use('/api/features', featureRoutes);

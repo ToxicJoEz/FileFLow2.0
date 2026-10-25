@@ -1,0 +1,112 @@
+{
+  "events": [
+    {
+      "eventId": "a665041e-6993-4866-8bf1-7c0059123e79",
+      "schemaVersion": 1,
+      "kind": "search",
+      "startedAt": "2026-10-25T08:24:58.941246+00:00",
+      "status": "partial_failure",
+      "environment": {
+        "appVersion": "0.0.0",
+        "engineVersion": "1.0.0",
+        "pythonVersion": "3.11.0",
+        "os": "windows",
+        "osRelease": "10",
+        "parsers": {
+          "PyMuPDF": "1.28.2",
+          "python-docx": "1.2.0",
+          "python-calamine": "0.8.2",
+          "pyarrow": "25.0.1",
+          "python-pptx": "1.0.2",
+          "regex": "2026.9.10",
+          "XlsxWriter": "3.2.9"
+        }
+      },
+      "config": {
+        "mode": "standard",
+        "scope": "name",
+        "caseSensitive": false,
+        "wholeWord": true,
+        "matchAll": false,
+        "hasExclusions": true,
+        "fuzzyTolerance": 2,
+        "dateFilter": "any",
+        "sizeFilter": "any",
+        "formats": [
+          "pdf"
+        ]
+      },
+      "metrics": {
+        "filesProcessed": 3,
+        "filesFailed": 1,
+        "warmStart": true,
+        "durationMs": 12.345
+      },
+      "formats": [],
+      "errors": [
+        {
+          "code": "PERMISSION_DENIED",
+          "stage": "extraction",
+          "format": "pdf",
+          "exception": "PermissionError",
+          "count": 1
+        }
+      ],
+      "finishedAt": "2026-10-25T08:24:58.947233+00:00"
+    },
+    {
+      "eventId": "9b3dd375-dfcd-46be-a482-3b1bcb118a71",
+      "schemaVersion": 1,
+      "kind": "search",
+      "startedAt": "2026-10-25T08:24:58.954233+00:00",
+      "status": "partial_failure",
+      "environment": {
+        "appVersion": "0.0.0",
+        "engineVersion": "1.0.0",
+        "pythonVersion": "3.11.0",
+        "os": "windows",
+        "osRelease": "10",
+        "parsers": {
+          "PyMuPDF": "1.28.2",
+          "python-docx": "1.2.0",
+          "python-calamine": "0.8.2",
+          "pyarrow": "25.0.1",
+          "python-pptx": "1.0.2",
+          "regex": "2026.9.10",
+          "XlsxWriter": "3.2.9"
+        }
+      },
+      "config": {
+        "mode": "fuzzy",
+        "scope": "name",
+        "caseSensitive": false,
+        "wholeWord": true,
+        "matchAll": false,
+        "hasExclusions": true,
+        "fuzzyTolerance": 2,
+        "dateFilter": "any",
+        "sizeFilter": "any",
+        "formats": [
+          "pdf"
+        ]
+      },
+      "metrics": {
+        "filesProcessed": 3,
+        "filesFailed": 1,
+        "warmStart": true,
+        "durationMs": 12.345
+      },
+      "formats": [],
+      "errors": [
+        {
+          "code": "PERMISSION_DENIED",
+          "stage": "extraction",
+          "format": "pdf",
+          "exception": "PermissionError",
+          "count": 1
+        }
+      ],
+      "finishedAt": "2026-10-25T08:24:58.961235+00:00"
+    }
+  ]
+}

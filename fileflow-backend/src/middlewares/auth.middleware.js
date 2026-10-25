@@ -16,34 +16,28 @@ export const protect = catchAsync(async (req, res, next) => {
     throw new Error('Not authorized to access this route');
   }
 
+  let decoded;
   try {
-    // 3. Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // 4. Check if user still exists
-    const currentUser = await User.findById(decoded.id);
-    if (!currentUser) {
-      res.status(401);
-      throw new Error('The user belonging to this token does no longer exist.');
-    }
-
-    if (currentUser.isDeleted) {
-      res.status(403);
-      throw new Error('This account has been deleted.');
-    }
-
-    if (currentUser.isBanned) {
-      res.status(403);
-      throw new Error('This account has been suspended.');
-    }
-
-    // Grant access to protected route
-    req.user = currentUser;
-    next();
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch (error) {
     res.status(401);
     throw new Error('Not authorized to access this route');
   }
+
+  // Database failures must remain server failures, not invalidate valid sessions.
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    res.status(401);
+    throw new Error('The user belonging to this token no longer exists.');
+  }
+  if (currentUser.isDeleted || currentUser.isBanned) {
+    res.status(403);
+    const error = new Error(currentUser.isDeleted ? 'This account has been deleted.' : 'This account has been suspended.');
+    error.code = 'ACCOUNT_DISABLED';
+    throw error;
+  }
+  req.user = currentUser;
+  next();
 });
 
 // Authorize roles

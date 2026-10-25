@@ -16,12 +16,13 @@ export const errorHandler = (err, req, res, next) => {
 
   // Zod Validation error (handled in validateRequest typically, but just in case)
   if (err.name === 'ZodError') {
-    message = err.errors.map((e) => e.message).join(', ');
+    message = err.issues.map((e) => e.message).join(', ');
     statusCode = 400;
   }
 
   res.status(statusCode).json({
     success: false,
+    ...(err.code === 'ACCOUNT_DISABLED' ? { code: err.code } : {}),
     message,
     stack: process.env.NODE_ENV === 'production' ? '🥞' : err.stack,
   });

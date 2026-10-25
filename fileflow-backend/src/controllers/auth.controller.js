@@ -1,6 +1,7 @@
 import { catchAsync } from '../utils/catchAsync.js';
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
+import { randomBytes } from 'node:crypto';
 
 // Helper function to generate token and return it
 const sendTokenResponse = (user, statusCode, res) => {
@@ -34,6 +35,8 @@ const ACCENT_COLORS = [
   '#3b82f6', // Blue
   '#6366f1', // Indigo
 ];
+
+const getRandomAccentColor = () => ACCENT_COLORS[Math.floor(Math.random() * ACCENT_COLORS.length)];
 
 const generateUniqueHandle = async (baseName) => {
   let cleanBase = (baseName || 'user').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 10);
@@ -151,7 +154,7 @@ export const googleLogin = async (req, res, next) => {
 
     // If they don't exist, create an account automatically
     if (!user) {
-      const randomPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+      const randomPassword = randomBytes(32).toString('base64url');
       const handle = await generateUniqueHandle(name);
       user = await User.create({
         name,
