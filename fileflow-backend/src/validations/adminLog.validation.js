@@ -24,6 +24,7 @@ export const eventSchema = z.strictObject({
     osRelease: z.string().regex(/^(?:[0-9.]{1,30}|unknown)$/), parsers: z.partialRecord(z.enum(parserNames), version),
   }),
   config: z.strictObject({
+    keywordCount: count.optional(), excludedKeywordCount: count.optional(),
     mode: z.enum(['standard', 'fuzzy']).optional(), scope: z.enum(['name', 'content']).optional(),
     caseSensitive: z.boolean().optional(), wholeWord: z.boolean().optional(), matchAll: z.boolean().optional(), hasExclusions: z.boolean().optional(),
     fuzzyTolerance: z.number().int().min(1).max(3).optional(), dateFilter: z.enum(['any','24h','week','month','year']).optional(),

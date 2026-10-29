@@ -1,4 +1,10 @@
 import { createHash } from 'node:crypto';
+import mongoose from 'mongoose';
+import { z } from 'zod';
+import User from '../models/User.js';
+import AccountSearchStats from '../models/AccountSearchStats.js';
+import SearchStatsReceipt from '../models/SearchStatsReceipt.js';
+import { incrementsFor } from '../services/searchStatistics.js';
 import AdminLog from '../models/AdminLog.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import { batchSchema, filterSchema } from '../validations/adminLog.validation.js';
@@ -17,7 +23,24 @@ export const ingestLogs = catchAsync(async(req,res)=>{
     }},upsert:true,
   }}));
   // A failed/partial bulk write is retried idempotently by the durable client outbox.
-  await AdminLog.bulkWrite(writes,{ordered:false,writeConcern:{w:'majority',j:true,wtimeout:10000}});
+  // Atomically persist logs, deduplication receipts and permanent numeric totals.
+  // Network/database work stays in the desktop's background uploader.
+  await mongoose.connection.transaction(async session => {
+    await AdminLog.bulkWrite(writes, {ordered: true, session});
+    const searches = distinct.filter(event => event.kind === 'search');
+    if (!searches.length) return;
+    const result = await SearchStatsReceipt.bulkWrite(searches.map(event => ({updateOne: {
+      filter: {_id: `${req.user._id}:${event.eventId}`},
+      update: {$setOnInsert: {_id: `${req.user._id}:${event.eventId}`}}, upsert: true,
+    }})), {ordered: true, session});
+    const added = Object.keys(result.upsertedIds || {}).map(index => searches[Number(index)]);
+    if (!added.length) return;
+    await AccountSearchStats.updateOne({_id: req.user._id}, {
+      $inc: incrementsFor(added),
+      $min: {trackingSince: receivedAt},
+      $max: {lastReceivedAt: receivedAt, lastSearchAt: new Date(Math.max(...added.map(event => Date.parse(event.startedAt))))},
+    }, {upsert: true, session});
+  }, {writeConcern: {w: 'majority', j: true, wtimeout: 10000}});
   res.status(200).json({success:true,accepted:[...new Set(events.map(event=>event.eventId))]});
 });
 
@@ -93,4 +116,20 @@ export const logSummary=catchAsync(async(req,res)=>{
   const {filter}=buildFilter(req.query);
   const [total,records]=await Promise.all([AdminLog.countDocuments(filter),AdminLog.find(filter).sort({receivedAt:-1,_id:-1}).limit(5000).lean()]);
   res.json({success:true,data:{...summarize(records),total,sampleLimit:5000}});
+});
+
+const accountQuery = z.strictObject({q: z.string().trim().max(80).default('')});
+export const findLogAccounts = catchAsync(async (req, res) => {
+  const {q} = accountQuery.parse(req.query);
+  const literal = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const filter = q ? {$or: [{name: {$regex: literal, $options: 'i'}}, {handle: {$regex: literal, $options: 'i'}},
+    ...(/^[a-fA-F0-9]{24}$/.test(q) ? [{_id: q}] : [])]} : {};
+  const data = await User.find(filter).select('_id name handle role').sort({name: 1, _id: 1}).limit(20).lean();
+  res.json({success: true, data, limit: 20});
+});
+
+export const accountStatistics = catchAsync(async (req, res) => {
+  const {actor} = filterSchema.parse({actor: req.params.actor});
+  const data = await AccountSearchStats.findById(actor).lean();
+  res.json({success: true, data: data || null});
 });
