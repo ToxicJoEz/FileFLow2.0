@@ -42,7 +42,7 @@ test('summary handles no-match successes, errors, percentiles and affected accou
   assert.equal(summary.topErrors[0].affectedUsers,1);
 });
 
-test('indexes provide idempotency and 30-day expiry support',()=>{
+test('indexes provide idempotency and expiry support',()=>{
   const indexes=AdminLog.schema.indexes();
   assert.ok(indexes.some(([fields,options])=>fields.actor===1&&fields.eventId===1&&options.unique));
   assert.ok(indexes.some(([fields,options])=>fields.expiresAt===1&&options.expireAfterSeconds===0));
@@ -82,7 +82,7 @@ test('HTTP access control, safe ingestion, retired endpoints and admin reads',as
     const saved=writes[0][0].updateOne.update.$setOnInsert;
     assert.equal(saved.actor,userId);
     assert.equal(saved.actorRole,'user');
-    assert.ok(saved.expiresAt>saved.receivedAt);
+    assert.equal(saved.expiresAt.getTime()-saved.receivedAt.getTime(),90*86400000);
     assert.equal(saved.keywords,undefined);
     const invalid=await request('/admin-logs/batch',{actor:userId,method:'POST',body:{events:[{...entry,actor:adminId,keywords:['SECRET']}]}});
     assert.equal(invalid.status,400);

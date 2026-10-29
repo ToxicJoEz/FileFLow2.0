@@ -6,7 +6,7 @@ import { batchSchema, filterSchema } from '../validations/adminLog.validation.js
 export const ingestLogs = catchAsync(async(req,res)=>{
   const {events}=batchSchema.parse(req.body);
   const receivedAt=new Date();
-  const expiresAt=new Date(receivedAt.getTime()+30*86400000);
+  const expiresAt=new Date(receivedAt.getTime()+90*86400000);
   const distinct=[...new Map(events.map(event=>[event.eventId,event])).values()];
   const writes=distinct.map(({errors,...event})=>({updateOne:{
     filter:{actor:req.user._id,eventId:event.eventId},
