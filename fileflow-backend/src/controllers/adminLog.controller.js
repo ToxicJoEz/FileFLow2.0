@@ -118,11 +118,12 @@ export const logSummary=catchAsync(async(req,res)=>{
   res.json({success:true,data:{...summarize(records),total,sampleLimit:5000}});
 });
 
-const accountQuery = z.strictObject({q: z.string().trim().max(80).default('')});
+const accountQuery = z.strictObject({q: z.string().trim().max(254).default('')});
 export const findLogAccounts = catchAsync(async (req, res) => {
   const {q} = accountQuery.parse(req.query);
+  if (!q) return res.json({success: true, data: [], limit: 20});
   const literal = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const filter = q ? {$or: [{name: {$regex: literal, $options: 'i'}}, {handle: {$regex: literal, $options: 'i'}},
+  const filter = q ? {$or: [{name: {$regex: literal, $options: 'i'}}, {handle: {$regex: literal, $options: 'i'}}, {email: {$regex: literal, $options: 'i'}},
     ...(/^[a-fA-F0-9]{24}$/.test(q) ? [{_id: q}] : [])]} : {};
   const data = await User.find(filter).select('_id name handle role').sort({name: 1, _id: 1}).limit(20).lean();
   res.json({success: true, data, limit: 20});

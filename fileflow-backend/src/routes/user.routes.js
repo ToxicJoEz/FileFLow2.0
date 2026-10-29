@@ -1,3 +1,4 @@
+import {getMyStatistics} from '../controllers/dashboard.controller.js';
 import express from 'express';
 import { getMe, updateMe, updateEmail, updatePassword, getAvatar, uploadAvatar, deleteAvatar, deleteMe, getAllUsersAdmin, toggleBanUser, toggleSoftDeleteUser, updateUserAdmin, deleteUserAvatarAdmin } from '../controllers/user.controller.js';
 import { protect, authorize } from '../middlewares/auth.middleware.js';
@@ -11,7 +12,8 @@ router.get('/me', getMe);
 router.get('/:id/avatar', getAvatar);
 
 // Protected routes
-router.use(protect); 
+router.use(protect);
+router.get('/me/statistics', getMyStatistics); 
 router.put('/me', validateRequest(updateProfileSchema), updateMe);
 router.put('/me/email', validateRequest(updateEmailSchema), updateEmail);
 router.put('/me/password', validateRequest(updatePasswordSchema), updatePassword);

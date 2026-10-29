@@ -136,8 +136,12 @@ test('HTTP access control, safe ingestion, retired endpoints and admin reads',as
     const preview={...event(),kind:'preview',config:{}};
     assert.equal((await request('/admin-logs/batch',{actor:userId,method:'POST',body:{events:[preview]}})).status,200);
     assert.equal(statisticsWrites.length,1);
+    const emptyAccounts=await request('/admin-logs/accounts?q=%20%20',{actor:adminId});
+    assert.deepEqual(emptyAccounts.body.data,[]);
+    assert.equal(accountQueries.length,0);
     const accounts=await request('/admin-logs/accounts?q='+encodeURIComponent('.*[x]'),{actor:adminId});
     assert.equal(accounts.status,200);
+    assert.equal(accountQueries[0].$or[2].email.$regex,String.raw`\.\*\[x\]`);
     assert.equal(accountQueries[0].$or[0].name.$regex,String.raw`\.\*\[x\]`);
     assert.equal((await request('/admin-logs/accounts?q[$ne]=x',{actor:adminId})).status,400);
     const stats=await request(`/admin-logs/accounts/${userId}/statistics`,{actor:adminId});
