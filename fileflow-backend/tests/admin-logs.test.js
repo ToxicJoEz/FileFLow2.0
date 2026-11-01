@@ -216,3 +216,11 @@ test('real Mongoose update casting preserves aggregate increments and transactio
   assert.ok(captured.update.$min.trackingSince instanceof Date);
   assert.deepEqual(captured.options.session,session);
 });
+
+test('semantic search events and mode filters are accepted without widening private fields',async()=>{
+  const input=event();input.config.mode='semantic';
+  assert.equal(eventSchema.safeParse(input).success,true);
+  const {filterSchema}=await import('../src/validations/adminLog.validation.js');
+  assert.equal(filterSchema.parse({mode:'semantic'}).mode,'semantic');
+  assert.equal(eventSchema.safeParse({...input,query:'private query'}).success,false);
+});

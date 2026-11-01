@@ -25,7 +25,7 @@ export const eventSchema = z.strictObject({
   }),
   config: z.strictObject({
     keywordCount: count.optional(), excludedKeywordCount: count.optional(),
-    mode: z.enum(['standard', 'fuzzy']).optional(), scope: z.enum(['name', 'content']).optional(),
+    mode: z.enum(['standard', 'fuzzy', 'semantic']).optional(), scope: z.enum(['name', 'content']).optional(),
     caseSensitive: z.boolean().optional(), wholeWord: z.boolean().optional(), matchAll: z.boolean().optional(), hasExclusions: z.boolean().optional(),
     fuzzyTolerance: z.number().int().min(1).max(3).optional(), dateFilter: z.enum(['any','24h','week','month','year']).optional(),
     sizeFilter: z.enum(['any','small','medium','large','huge']).optional(), formats: z.array(z.enum(formats)).max(30).optional(),
@@ -44,7 +44,7 @@ export const batchSchema = z.strictObject({events:z.array(eventSchema).min(1).ma
 // Query strings never become arbitrary MongoDB objects/regular expressions.
 export const filterSchema = z.strictObject({
   kind:z.enum(['search','preview','export']).optional(), status:z.enum(outcomes).optional(),
-  mode:z.enum(['standard','fuzzy']).optional(), scope:z.enum(['name','content']).optional(),
+  mode:z.enum(['standard','fuzzy','semantic']).optional(), scope:z.enum(['name','content']).optional(),
   format:z.enum(formats).optional(), code:z.enum(codes).optional(),
   version:version.optional(), actor:z.string().regex(/^[a-fA-F0-9]{24}$/).optional(),
   eventId:z.uuid().optional(), searchId:z.uuid().optional(),
