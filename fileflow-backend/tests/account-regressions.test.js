@@ -25,7 +25,9 @@ test('register and first Google login create a valid accent color', async (t) =>
     inputs.push(fields);
     return new User({ ...fields, _id: '507f1f77bcf86cd799439011' });
   });
-  t.mock.method(globalThis, 'fetch', async () => ({ ok: true, json: async () => ({name:'Test Person', email:'test@example.com'}) }));
+  t.mock.method(globalThis, 'fetch', async (url) => ({ ok: true, json: async () => (String(url).includes('tokeninfo')
+    ? {aud:'616866655772-3ofcr0nl0ihqp36e1df2k4k9aijb4vc8.apps.googleusercontent.com', expires_in:'3599', email:'test@example.com'}
+    : {name:'Test Person', email:'test@example.com', email_verified:true}) }));
   const registered = await invoke(register, {body:{name:'Test Person', email:'test@example.com', password:'test-password'}});
   const google = await invoke(googleLogin, {body:{accessToken:'test-token'}});
   assert.equal(registered.status, 201);
