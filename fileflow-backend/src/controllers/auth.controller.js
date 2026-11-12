@@ -2,13 +2,12 @@ import { catchAsync } from '../utils/catchAsync.js';
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import { randomBytes } from 'node:crypto';
+import { signSession, revokeSession, findUserByEmail, normalizeEmail } from '../utils/session.js';
 
 // Helper function to generate token and return it
 const sendTokenResponse = (user, statusCode, res) => {
   // Create token
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN
-  });
+  const token = signSession(user);
 
   user.password = undefined; // Remove password from output
 
@@ -59,10 +58,11 @@ const generateUniqueHandle = async (baseName) => {
 // @route     POST /api/auth/register
 // @access    Public
 export const register = catchAsync(async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, password } = req.body;
+  const email = normalizeEmail(req.body.email);
 
-  // Check if user already exists
-  const existingUser = await User.findOne({ email });
+  // Check if user already exists (case-insensitive, so A@x.com and a@x.com are one account)
+  const existingUser = await findUserByEmail(User, email);
   if (existingUser) {
     res.status(400);
     throw new Error('User already exists with that email');
@@ -88,8 +88,8 @@ export const register = catchAsync(async (req, res, next) => {
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
-  // Check for user
-  const user = await User.findOne({ email }).select('+password');
+  // Check for user (case-insensitive)
+  const user = await findUserByEmail(User, email, '+password');
 
   if (!user) {
     res.status(401);
@@ -180,10 +180,12 @@ export const googleLogin = async (req, res, next) => {
       throw new Error('No Google access token provided');
     }
 
-    const { email, name } = await verifyGoogleAccessToken(accessToken, res);
+    const profile = await verifyGoogleAccessToken(accessToken, res);
+    const email = normalizeEmail(profile.email);
+    const { name } = profile;
 
     // Check if user exists in our DB
-    let user = await User.findOne({ email });
+    let user = await findUserByEmail(User, email);
 
     // If they don't exist, create an account automatically
     if (!user) {
@@ -224,8 +226,16 @@ export const googleLogin = async (req, res, next) => {
 // @route     POST /api/auth/logout
 // @access    Public
 export const logout = catchAsync(async (req, res, next) => {
-  // With localStorage tokens, logging out is entirely client-side.
-  // We can just return success here.
+  // Revoke the token that signed out, so a copy of it (another tab, a stolen
+  // localStorage value) cannot keep using the account.
+  const header = req.headers?.authorization;
+  if (header?.startsWith('Bearer ')) {
+    try {
+      await revokeSession(jwt.verify(header.slice(7), process.env.JWT_SECRET));
+    } catch (error) {
+      if (!['JsonWebTokenError', 'TokenExpiredError', 'NotBeforeError'].includes(error.name)) throw error;
+    }
+  }
   res.status(200).json({
     success: true,
     data: {}

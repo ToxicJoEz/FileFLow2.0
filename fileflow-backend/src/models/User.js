@@ -10,8 +10,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add an email'],
     unique: true,
+    lowercase: true,
+    trim: true,
+    // Any normal address, including long endings like .info, .tech or .agency.
     match: [
-      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+      /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
       'Please add a valid email'
     ]
   },
@@ -60,6 +63,11 @@ const userSchema = new mongoose.Schema({
   accentColor: {
     type: String,
     default: '#8b5cf6'
+  },
+  // Bumped when the password changes, which ends every session issued before.
+  tokenVersion: {
+    type: Number,
+    default: 0
   },
   role: {
     type: String,

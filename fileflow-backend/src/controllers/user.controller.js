@@ -3,6 +3,7 @@ import { catchAsync } from '../utils/catchAsync.js';
 import User from '../models/User.js';
 import Topic from '../models/Topic.js';
 import Reply from '../models/Reply.js';
+import { isSessionCurrent, signSession, findUserByEmail, normalizeEmail } from '../utils/session.js';
 // @desc      Get current logged in user
 // @route     GET /api/users/me
 // @access    Public (silently checks token)
@@ -19,7 +20,7 @@ export const getMe = catchAsync(async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
-    if (!user || user.isDeleted || user.isBanned) {
+    if (!user || user.isDeleted || user.isBanned || !(await isSessionCurrent(decoded, user))) {
       return res.status(200).json({ success: true, data: null });
     }
     res.status(200).json({
@@ -102,7 +103,13 @@ export const updateEmail = catchAsync(async (req, res, next) => {
     throw new Error('Incorrect current password');
   }
 
-  user.email = newEmail;
+  const email = normalizeEmail(newEmail);
+  const taken = await findUserByEmail(User, email);
+  if (taken && String(taken._id) !== String(user._id)) {
+    res.status(400);
+    throw new Error('Email is already taken by another account');
+  }
+  user.email = email;
   await user.save();
 
   res.status(200).json({
@@ -126,11 +133,14 @@ export const updatePassword = catchAsync(async (req, res, next) => {
   }
 
   user.password = newPassword;
+  // End every other session (other devices, stolen tokens). This device gets a fresh token.
+  user.tokenVersion = (user.tokenVersion || 0) + 1;
   await user.save();
 
   res.status(200).json({
     success: true,
-    data: user
+    data: user,
+    token: signSession(user)
   });
 });
 
@@ -412,13 +422,13 @@ export const updateUserAdmin = catchAsync(async (req, res, next) => {
   }
 
   // Check email uniqueness if modified
-  if (email && email !== user.email) {
-    const existing = await User.findOne({ email });
-    if (existing) {
+  if (email && normalizeEmail(email) !== normalizeEmail(user.email)) {
+    const existing = await findUserByEmail(User, email);
+    if (existing && String(existing._id) !== String(user._id)) {
       res.status(400);
       throw new Error('Email is already taken by another account');
     }
-    user.email = email;
+    user.email = normalizeEmail(email);
   }
 
   // Check handle uniqueness if modified

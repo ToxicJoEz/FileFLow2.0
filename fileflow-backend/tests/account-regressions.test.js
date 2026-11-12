@@ -57,6 +57,7 @@ test('email/password update responses never expose selected hashes', async (t) =
   user.matchPassword = async () => true;
   user.save = async () => user;
   t.mock.method(User, 'findById', () => ({select: async () => user}));
+  t.mock.method(User, 'findOne', async () => null); // new email is not taken
   for (const handler of [updateEmail, updatePassword]) {
     const result = await invoke(handler, {user:{id:user.id}, body:{newEmail:'new@example.com', currentPassword:'test', newPassword:'changed-password'}});
     assert.equal(result.body.data.password, undefined);

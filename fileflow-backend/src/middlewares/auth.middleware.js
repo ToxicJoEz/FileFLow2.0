@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { catchAsync } from '../utils/catchAsync.js';
 import User from '../models/User.js';
+import { isSessionCurrent } from '../utils/session.js';
 
 export const protect = catchAsync(async (req, res, next) => {
   let token;
@@ -29,6 +30,10 @@ export const protect = catchAsync(async (req, res, next) => {
   if (!currentUser) {
     res.status(401);
     throw new Error('The user belonging to this token no longer exists.');
+  }
+  if (!(await isSessionCurrent(decoded, currentUser))) {
+    res.status(401);
+    throw new Error('Your session has ended. Please sign in again.');
   }
   if (currentUser.isDeleted || currentUser.isBanned) {
     res.status(403);
