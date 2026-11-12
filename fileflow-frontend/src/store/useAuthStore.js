@@ -76,7 +76,9 @@ export const useAuthStore = create((set, get) => ({
   updatePassword: async (data) => {
     set({ isLoading: true });
     try {
-      await updatePasswordApi(data);
+      const result = await updatePasswordApi(data);
+      // The server ends every older session on a password change and sends a fresh token for this one.
+      if (result?.token) localStorage.setItem('token', result.token);
       set({ isLoading: false });
       return { success: true };
     } catch (error) {
