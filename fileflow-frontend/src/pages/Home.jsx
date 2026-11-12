@@ -172,7 +172,7 @@ export default function Home() {
             <div className="feat-card">
               <div className="feat-icon"><Shield size={20} /></div>
               <div className="feat-title">100% private & offline</div>
-              <div className="feat-desc">Your files never leave your machine. No cloud, no telemetry, no surprises.</div>
+              <div className="feat-desc">Your files never leave your machine. No document uploads. Technical diagnostics exclude your search terms and document details.</div>
             </div>
           </div>
         </div>

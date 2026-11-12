@@ -62,18 +62,18 @@ export default function Privacy() {
                   <tr><td><strong>Password hash</strong></td><td>Authentication — never stored in plaintext</td><td>Our servers (bcrypt)</td></tr>
                   <tr><td><strong>Plan & billing status</strong></td><td>Feature access control</td><td>Our servers + Stripe</td></tr>
                   <tr><td><strong>Payment details</strong></td><td>Subscription billing</td><td>Stripe only — we never see your card</td></tr>
-                  <tr><td><strong>Usage stats</strong> (opt-in)</td><td>Product improvement</td><td>Our servers — anonymised</td></tr>
-                  <tr><td><strong>Crash reports</strong> (opt-in)</td><td>Bug diagnosis — no file content included</td><td>Our servers</td></tr>
+                  <tr><td><strong>Technical diagnostics</strong></td><td>Search reliability and performance</td><td>Our servers — account-linked, admin access only</td></tr>
+                  <tr><td><strong>Controlled failure reports</strong></td><td>Bug diagnosis — no file content included</td><td>Our servers</td></tr>
                   <tr><td><strong>Forum posts</strong></td><td>Running the community</td><td>Our servers — publicly visible</td></tr>
                 </tbody>
               </table>
-              <p>Usage stats and crash reports are <strong>opt-in</strong> and can be disabled anytime in Settings → Privacy inside the FileFlow app.</p>
+              <p>The desktop automatically records technical summaries of searches, previews, and exports: outcomes, durations, aggregate format counts, application versions, and controlled error codes. These diagnostics are linked to your account and readable only by administrators. Server records expire after 90 days; undelivered technical records remain in a local retry queue until delivery is acknowledged.</p>
             </div>
 
             <div className="legal-section" id="dont">
               <h2>3. What We Don't Collect</h2>
               <div className="hbox green"><p>🚫 We do <strong>not</strong> collect, store, or have access to: your files, their contents, their filenames, their file paths, your search queries, or any text found in your documents. This data never leaves your machine.</p></div>
-              <p>FileFlow's search engine runs entirely on your PC. No query is sent to our servers. No file content is uploaded. No document metadata is transmitted. We also do not use cookies for tracking, run behavioural advertising, or share any personal data with advertisers.</p>
+              <p>FileFlow's search engine runs entirely on your PC. No query is sent to our servers. No file content is uploaded. No per-document metadata is transmitted. Aggregate file-format counts and technical search settings are included in diagnostics. We also do not use cookies for tracking, run behavioural advertising, or share any personal data with advertisers.</p>
             </div>
 
             <div className="legal-section" id="use">
@@ -85,7 +85,7 @@ export default function Privacy() {
                 <li>Sending transactional emails (receipts, password resets, update notifications)</li>
                 <li>Providing customer support</li>
                 <li>Running the community forum</li>
-                <li>Aggregated, anonymous product analytics to improve FileFlow (opt-in only)</li>
+                <li>Account-linked technical diagnostics to identify failures and improve search reliability and performance</li>
               </ul>
               <p>We will <strong>never</strong> sell your personal data, use it for advertising, or share it with third parties except as described in section 5.</p>
             </div>
@@ -118,7 +118,7 @@ export default function Privacy() {
                 <li><strong>Rectify</strong> — correct inaccurate data (most fields editable in your profile)</li>
                 <li><strong>Erase</strong> — delete your account and all personal data</li>
                 <li><strong>Portability</strong> — receive your data in a machine-readable format</li>
-                <li><strong>Opt out</strong> — disable analytics &amp; crash reporting in Settings → Privacy</li>
+                <li><strong>Diagnostics</strong> — view delivery status in desktop Settings; contact us about diagnostic records associated with your account</li>
               </ul>
               <p>Email <a href="mailto:privacy@file-flow.com">privacy@file-flow.com</a> or use Account Deletion in your dashboard. We respond within 30 days. EU/EEA users may also lodge a complaint with their local data protection authority.</p>
             </div>

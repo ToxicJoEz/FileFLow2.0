@@ -56,12 +56,12 @@ export default function Terms() {
 
             <div className="legal-section" id="privacy">
               <h2>3. Privacy & Data</h2>
-              <div className="legal-highlight"><p>📁 <strong>FileFlow does not upload your files.</strong> All search processing happens locally on your device. No file content, filenames, or metadata is transmitted to our servers.</p></div>
+              <div className="legal-highlight"><p>📁 <strong>FileFlow does not upload your files.</strong> All search processing happens locally on your device. No file content, filenames, file paths, search terms, or per-document metadata is transmitted to our servers. Account-linked technical diagnostics are sent automatically for administrator troubleshooting.</p></div>
               <p>We collect only:</p>
               <ul>
                 <li>Account information (email, name) provided at registration</li>
-                <li>Usage statistics (number of searches, features used) — only if you opt in</li>
-                <li>Crash reports — only if you opt in</li>
+                <li>Technical operation summaries: outcomes, counts, durations, aggregate formats, and version information</li>
+                <li>Controlled failure codes and processing stages, with no raw exception messages or document text; accessible only to administrators and retained on the server for 90 days</li>
                 <li>Payment information — processed by Stripe; we never see your full card number</li>
               </ul>
               <p>See our <Link to="/privacy" style={{ color: 'var(--gold)' }}>Privacy Policy</Link> for full details.</p>

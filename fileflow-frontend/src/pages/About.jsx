@@ -66,7 +66,7 @@ export default function About() {
               <h2 className="section-title">File management<br />should be <span className="gold-text">effortless.</span></h2>
               <p>FileFlow was created with one goal in mind: to make finding information inside your files instant, private, and painless. We're a small team passionate about simplifying the way people work with documents.</p>
               <p>Our Keyword Search tool is the first of many features we're building. Instead of opening every file to find what you need, simply type your keywords and FileFlow will almost instantly locate the exact lines containing them — across every document in your folders.</p>
-              <p>Everything runs locally on your Windows PC. Your files never leave your machine. No cloud sync. No telemetry. Just a fast, private tool that works.</p>
+              <p>Everything runs locally on your Windows PC. Your files never leave your machine. Document processing stays local. Account-linked technical diagnostics help administrators troubleshoot failures without collecting search terms, filenames, paths, or document text.</p>
               <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <Link to="/beta" className="btn-primary">Join the beta free</Link>
                 <Link to="/roadmap" className="btn-ghost">See what's next →</Link>

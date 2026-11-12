@@ -7,3 +7,9 @@ client_secret*.json
 # Excluded folders
 fileflow-site/
 Logo concepts/
+
+# Optional semantic runtime, weights and local caches
+fileflow-semantic/.venv/
+fileflow-semantic/model/
+**/__pycache__/
+*.sqlite3

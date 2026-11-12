@@ -13,7 +13,7 @@ export default function Pricing() {
 
   const faqs = [
     { q: "Is there a free trial?", a: "Yes — Pro comes with a 14-day free trial. No credit card required. Cancel anytime before the trial ends and you won't be charged." },
-    { q: "Does FileFlow upload my files?", a: "Never. FileFlow runs 100% locally on your Windows PC. No file content ever leaves your machine — not even metadata." },
+    { q: "Does FileFlow upload my files?", a: "Never. FileFlow runs 100% locally on your Windows PC. No file contents, filenames, paths, or search terms are uploaded. Technical diagnostics include outcomes, timings, and aggregate format counts for administrator troubleshooting." },
     { q: "What payment methods do you accept?", a: "We accept all major credit cards (Visa, Mastercard, Amex) via Stripe. All payments are encrypted and secure." },
     { q: "Can I switch plans later?", a: "Yes. You can upgrade or downgrade at any time from your billing dashboard. Upgrades take effect immediately, downgrades at the end of your billing period." },
     { q: "How does team billing work?", a: "Team pricing is per seat, billed monthly or annually. You can add or remove seats at any time and we prorate automatically." },

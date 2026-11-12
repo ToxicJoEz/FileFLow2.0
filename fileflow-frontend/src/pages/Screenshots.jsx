@@ -170,7 +170,7 @@ export default function Screenshots() {
                 <li><div className="tbi">🏆</div>40 achievements across search, file mastery, and community</li>
                 <li><div className="tbi">📊</div>Personal stats — searches run, time saved, files opened</li>
                 <li><div className="tbi">🌙</div>Dark / light theme, font size, result density settings</li>
-                <li><div className="tbi">🔒</div>Opt in or out of anonymous analytics anytime in Settings → Privacy</li>
+                <li><div className="tbi">🔒</div>Technical diagnostics exclude document contents, filenames, paths, and search terms</li>
               </ul>
             </div>
             <div className="aw">
