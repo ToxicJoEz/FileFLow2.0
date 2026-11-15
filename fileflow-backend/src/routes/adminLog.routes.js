@@ -1,7 +1,7 @@
 import express from 'express';
 import { rateLimit } from 'express-rate-limit';
 import { protect,authorize } from '../middlewares/auth.middleware.js';
-import { ingestLogs,listLogs,logSummary,findLogAccounts,accountStatistics } from '../controllers/adminLog.controller.js';
+import { ingestLogs,listLogs,logSummary,findLogAccounts,accountStatistics,logFacets } from '../controllers/adminLog.controller.js';
 
 const router=express.Router();
 router.use(rateLimit({windowMs:60000,limit:600,standardHeaders:true,legacyHeaders:false}));
@@ -14,5 +14,6 @@ router.use(authorize('admin'));
 router.get('/accounts',findLogAccounts);
 router.get('/accounts/:actor/statistics',accountStatistics);
 router.get('/summary',logSummary);
+router.get('/facets',logFacets);
 router.get('/',listLogs);
 export default router;

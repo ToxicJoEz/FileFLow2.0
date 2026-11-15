@@ -44,39 +44,84 @@ export const ingestLogs = catchAsync(async(req,res)=>{
   res.status(200).json({success:true,accepted:[...new Set(events.map(event=>event.eventId))]});
 });
 
+const fields={
+  kind:'kind',status:'status',eventId:'eventId',searchId:'searchId',actor:'actor',role:'actorRole',
+  mode:'config.mode',scope:'config.scope',caseSensitive:'config.caseSensitive',wholeWord:'config.wholeWord',
+  matchAll:'config.matchAll',hasExclusions:'config.hasExclusions',fuzzyTolerance:'config.fuzzyTolerance',
+  dateFilter:'config.dateFilter',sizeFilter:'config.sizeFilter',semanticBackend:'config.semanticBackend',
+  semanticDevice:'config.semanticDevice',semanticFallback:'config.semanticFallback',warmStart:'metrics.warmStart',
+  format:'formats.format',code:'issues.code',stage:'issues.stage',exception:'issues.exception',
+  version:'environment.appVersion',engineVersion:'environment.engineVersion',pythonVersion:'environment.pythonVersion',
+  os:'environment.os',osRelease:'environment.osRelease',
+};
+const ranges={DurationMs:'metrics.durationMs',Files:'metrics.filesProcessed',Keywords:'config.keywordCount'};
+const sortOrders={newest:{receivedAt:-1,_id:-1},oldest:{receivedAt:1,_id:1},slowest:{'metrics.durationMs':-1,_id:-1},
+  fastest:{'metrics.durationMs':1,_id:1},most_files:{'metrics.filesProcessed':-1,_id:-1},
+  most_failures:{'metrics.filesFailed':-1,_id:-1},most_results:{'metrics.passages':-1,_id:-1}};
+
+// Every value is validated against a closed schema first, so no input becomes an operator.
 export function buildFilter(query){
   const input=filterSchema.parse(query);
-  const filter={expiresAt:{$gt:new Date()}};
-  for(const field of ['kind','status','eventId','searchId']) if(input[field])filter[field]=input[field];
-  if(input.actor)filter.actor=input.actor;
-  if(input.mode)filter['config.mode']=input.mode;
-  if(input.scope)filter['config.scope']=input.scope;
-  if(input.format)filter['formats.format']=input.format;
-  if(input.code)filter['issues.code']=input.code;
-  if(input.version)filter['environment.appVersion']=input.version;
-  if(input.from||input.to){
-    filter.receivedAt={};
-    if(input.from)filter.receivedAt.$gte=new Date(input.from);
-    if(input.to)filter.receivedAt.$lte=new Date(input.to);
+  const and=[{expiresAt:{$gt:new Date()}}];
+  for(const [key,path] of Object.entries(fields)){
+    if(input[key]===undefined)continue;
+    // A flag older clients never sent counts as "off".
+    and.push({[path]:input[key]===false?{$ne:true}:input[key]});
   }
-  return {input,filter};
+  for(const [suffix,path] of Object.entries(ranges)){
+    const min=input['min'+suffix],max=input['max'+suffix];
+    if(min!==undefined||max!==undefined)and.push({[path]:{...(min!==undefined?{$gte:min}:{}),...(max!==undefined?{$lte:max}:{})}});
+  }
+  if(input.hasErrors!==undefined)and.push(input.hasErrors?{'issues.0':{$exists:true}}:{'issues.0':{$exists:false}});
+  if(input.hasMatches!==undefined)and.push(input.hasMatches?{'metrics.filesMatched':{$gt:0}}:{'metrics.filesMatched':{$not:{$gt:0}}});
+  if(input.usedCache!==undefined)and.push(input.usedCache?{'metrics.cacheHits':{$gt:0}}:{'metrics.cacheHits':{$not:{$gt:0}}});
+  if(input.from||input.to){
+    const received={};
+    if(input.from)received.$gte=new Date(input.from);
+    if(input.to)received.$lte=new Date(input.to);
+    and.push({receivedAt:received});
+  }
+  const filter=and.length===1?and[0]:{$and:and};
+  return {input,filter,sort:sortOrders[input.sort]};
 }
 
 export const listLogs=catchAsync(async(req,res)=>{
-  const {input,filter}=buildFilter(req.query);
+  const {input,filter,sort}=buildFilter(req.query);
   const [total,data]=await Promise.all([
     AdminLog.countDocuments(filter),
-    AdminLog.find(filter).sort({receivedAt:-1,_id:-1}).skip((input.page-1)*input.limit).limit(input.limit)
+    AdminLog.find(filter).sort(sort).skip((input.page-1)*input.limit).limit(input.limit)
       .populate('actor','name handle role').lean(),
   ]);
   res.json({success:true,data:data.map(({issues,...event})=>({...event,errors:issues||[]})),total,page:input.page,limit:input.limit});
 });
 
 export function summarize(records){
-  const counts={},durations=[],issues=new Map(),versions=new Map(),formats=new Map(),modes=new Map();
-  let searches=0,files=0,failedFiles=0;
+  const counts={},kinds={},durations=[],issues=new Map(),versions=new Map(),formats=new Map(),modes=new Map(),days=new Map(),runtimes=new Map();
+  const semantic={searches:0,cacheHits:0,cacheMisses:0,passagesPrepared:0,passagesScored:0,fallbacks:0,warmStarts:0,modelLoad:[],prepare:[],firstResult:[]};
+  let searches=0,files=0,failedFiles=0,matchedFiles=0,passages=0,cacheHits=0,cacheMisses=0;
   for(const event of records){
     counts[event.status]=(counts[event.status]||0)+1;
+    kinds[event.kind]=(kinds[event.kind]||0)+1;
+    const day=new Date(event.receivedAt||event.startedAt).toISOString().slice(0,10);
+    const daily=days.get(day)||{day,events:0,failures:0,searches:0};
+    daily.events++;if(['failed','partial_failure','interrupted'].includes(event.status))daily.failures++;
+    if(event.kind==='search')daily.searches++;days.set(day,daily);
+    if(event.kind==='search'){
+      matchedFiles+=event.metrics.filesMatched||0;passages+=event.metrics.passages||0;
+      cacheHits+=event.metrics.cacheHits||0;cacheMisses+=event.metrics.cacheMisses||0;
+    }
+    if(event.kind==='search'&&event.config.mode==='semantic'){
+      semantic.searches++;
+      for(const key of ['cacheHits','cacheMisses','passagesPrepared','passagesScored'])semantic[key]+=event.metrics[key]||0;
+      if(event.config.semanticFallback)semantic.fallbacks++;
+      if(event.metrics.warmStart)semantic.warmStarts++;
+      if(event.metrics.modelLoadMs!=null)semantic.modelLoad.push(event.metrics.modelLoadMs);
+      if(event.metrics.prepareMs!=null)semantic.prepare.push(event.metrics.prepareMs);
+      if(event.metrics.firstResultMs!=null)semantic.firstResult.push(event.metrics.firstResultMs);
+      const key=(event.config.semanticBackend||'unknown')+'/'+(event.config.semanticDevice||'unknown');
+      const runtime=runtimes.get(key)||{backend:event.config.semanticBackend||'unknown',device:event.config.semanticDevice||'unknown',searches:0,durations:[]};
+      runtime.searches++;if(event.status!=='interrupted')runtime.durations.push(event.metrics.durationMs);runtimes.set(key,runtime);
+    }
     if(event.kind==='search'){
       searches++;files+=event.metrics.filesProcessed||0;failedFiles+=event.metrics.filesFailed||0;
       if(event.status!=='interrupted')durations.push(event.metrics.durationMs);
@@ -87,8 +132,10 @@ export function summarize(records){
     if(event.kind==='search'&&event.status!=='interrupted'){
       version.durations.push(event.metrics.durationMs);
       const key=event.config.mode+'/'+event.config.scope;
-      const mode=modes.get(key)||{mode:event.config.mode,scope:event.config.scope,searches:0,files:0,durations:[]};
-      mode.searches++;mode.files+=event.metrics.filesProcessed||0;mode.durations.push(event.metrics.durationMs);modes.set(key,mode);
+      const mode=modes.get(key)||{mode:event.config.mode,scope:event.config.scope,searches:0,files:0,failures:0,passages:0,durations:[]};
+      mode.searches++;mode.files+=event.metrics.filesProcessed||0;mode.passages+=event.metrics.passages||0;
+      if(['failed','partial_failure'].includes(event.status))mode.failures++;
+      mode.durations.push(event.metrics.durationMs);modes.set(key,mode);
     }
     versions.set(appVersion,version);
     for(const entry of event.formats){
@@ -107,7 +154,13 @@ export function summarize(records){
   };
   durations.sort((a,b)=>a-b);
   const percentile=p=>durations.length?durations[Math.max(0,Math.ceil(p*durations.length)-1)]:null;
-  return {sampleSize:records.length,searches,files,failedFiles,counts,medianMs:percentile(.5),p95Ms:percentile(.95),
+  const median=values=>{const sorted=[...values].sort((a,b)=>a-b);return sorted.length?sorted[Math.ceil(sorted.length*.5)-1]:null;};
+  const {modelLoad,prepare,firstResult,...semanticTotals}=semantic;
+  return {sampleSize:records.length,searches,files,failedFiles,matchedFiles,passages,cacheHits,cacheMisses,counts,kinds,
+    medianMs:percentile(.5),p95Ms:percentile(.95),
+    timeline:[...days.values()].sort((a,b)=>a.day.localeCompare(b.day)),
+    semantic:{...semanticTotals,medianModelLoadMs:median(modelLoad),medianPrepareMs:median(prepare),medianFirstResultMs:median(firstResult),
+      runtimes:[...runtimes.values()].map(timing).sort((a,b)=>b.searches-a.searches)},
     topErrors:[...issues.values()].sort((a,b)=>b.count-a.count).slice(0,20).map(({actors,...entry})=>({...entry,affectedUsers:actors.size})),
     versions:[...versions.values()].map(timing).sort((a,b)=>b.events-a.events),modes:[...modes.values()].map(timing),formats:[...formats.values()].sort((a,b)=>b.processed-a.processed)};
 }
@@ -116,6 +169,14 @@ export const logSummary=catchAsync(async(req,res)=>{
   const {filter}=buildFilter(req.query);
   const [total,records]=await Promise.all([AdminLog.countDocuments(filter),AdminLog.find(filter).sort({receivedAt:-1,_id:-1}).limit(5000).lean()]);
   res.json({success:true,data:{...summarize(records),total,sampleLimit:5000}});
+});
+
+// Values actually present in retained records, so the page can offer them as choices.
+export const logFacets=catchAsync(async(req,res)=>{
+  const live={expiresAt:{$gt:new Date()}};
+  const paths={versions:'environment.appVersion',engineVersions:'environment.engineVersion',pythonVersions:'environment.pythonVersion',osReleases:'environment.osRelease'};
+  const entries=await Promise.all(Object.entries(paths).map(async([key,path])=>[key,(await AdminLog.distinct(path,live)).filter(value=>typeof value==='string').sort().reverse().slice(0,50)]));
+  res.json({success:true,data:Object.fromEntries(entries)});
 });
 
 const accountQuery = z.strictObject({q: z.string().trim().max(254).default('')});

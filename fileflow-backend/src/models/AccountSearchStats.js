@@ -9,5 +9,7 @@ const schema = new mongoose.Schema({
   statuses: {type: mongoose.Schema.Types.Mixed, default: {}},
   formats: {type: mongoose.Schema.Types.Mixed, default: {}},
   modes: {type: mongoose.Schema.Types.Mixed, default: {}},
+  modeTotals: {type: mongoose.Schema.Types.Mixed, default: {}},
+  semantic: {type: mongoose.Schema.Types.Mixed, default: {}},
 }, {strict: 'throw', versionKey: false});
 export default mongoose.model('AccountSearchStats', schema);

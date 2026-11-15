@@ -1,0 +1,88 @@
+{
+  "events": [
+    {
+      "eventId": "2eac7680-4a53-460d-96ea-9794300cfb4d",
+      "schemaVersion": 1,
+      "kind": "search",
+      "startedAt": "2026-11-15T10:52:43.884655+00:00",
+      "status": "success",
+      "environment": {
+        "appVersion": "0.0.0",
+        "engineVersion": "1.0.0",
+        "pythonVersion": "3.13.18",
+        "os": "other",
+        "osRelease": "unknown",
+        "parsers": {
+          "PyMuPDF": "1.28.2",
+          "python-docx": "1.2.0",
+          "python-calamine": "0.8.2",
+          "pyarrow": "25.0.1",
+          "python-pptx": "1.0.2",
+          "regex": "2026.9.10",
+          "XlsxWriter": "3.2.9"
+        }
+      },
+      "config": {
+        "keywordCount": 1,
+        "excludedKeywordCount": 0,
+        "mode": "semantic",
+        "scope": "content",
+        "caseSensitive": false,
+        "wholeWord": false,
+        "matchAll": false,
+        "hasExclusions": false,
+        "fuzzyTolerance": 2,
+        "dateFilter": "any",
+        "sizeFilter": "any",
+        "formats": [],
+        "resultLimit": 5,
+        "semanticBackend": "onnx-int8",
+        "semanticDevice": "cpu",
+        "semanticFallback": false
+      },
+      "metrics": {
+        "filesProcessed": 2,
+        "filesFailed": 0,
+        "filesSkipped": 0,
+        "filesMatched": 2,
+        "passages": 2,
+        "cacheHits": 0,
+        "cacheMisses": 2,
+        "processingMs": 11.101,
+        "prepareMs": 10.761,
+        "scoringMs": 0.305,
+        "passagesPrepared": 2,
+        "passagesScored": 2,
+        "firstResultMs": 19.045,
+        "foldersSkipped": 0,
+        "filesDiscovered": 2,
+        "filesEligible": 2,
+        "discoveryMs": 0.186,
+        "warmStart": false,
+        "modelLoadMs": 0.039,
+        "engineMs": 19.049,
+        "durationMs": 12.5
+      },
+      "formats": [
+        {
+          "format": "txt",
+          "processed": 1,
+          "failed": 0,
+          "matched": 1,
+          "passages": 1,
+          "processingMs": 5.697
+        },
+        {
+          "format": "md",
+          "processed": 1,
+          "failed": 0,
+          "matched": 1,
+          "passages": 1,
+          "processingMs": 5.404
+        }
+      ],
+      "errors": [],
+      "finishedAt": "2026-11-15T10:52:43.885219+00:00"
+    }
+  ]
+}
